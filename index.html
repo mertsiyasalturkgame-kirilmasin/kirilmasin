@@ -309,9 +309,10 @@ button.fitem{cursor:pointer}
 .chick-new{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 10px;font-weight:800;color:var(--accent)}
 .chick-new svg{width:40px;height:40px}
 /* ana ekrana eklenmiş uygulamada (iOS) tam ekran yüksekliği */
-.map,.wrap,.farm,.pop,.splash{bottom:auto!important;height:100vh!important;height:100lvh!important}
+.map,.wrap,.farm,.pop,.splash{bottom:auto!important;height:100vh!important;height:100lvh!important;height:var(--appH,100lvh)!important}
 html,body{background:#2f1f12}
-html.mapbg,html.mapbg body{background:#79b544}
+/* ana ekran uygulamasında üst şerit: iOS saat bölgesini bulanıklaştırır, oraya yalnızca düz ahşap gelir */
+html.pwa .mapTop,html.pwa .farmTop{padding-top:calc(env(safe-area-inset-top) + 26px)!important}
 /* ---------- çiftlik yolu bölüm haritası ---------- */
 .map{position:fixed;top:0;left:0;right:0;bottom:0;z-index:60;background:#79b544;overflow:hidden;font-family:var(--body);color:#fff}
 .map[hidden]{display:none}
@@ -384,7 +385,7 @@ html.mapbg,html.mapbg body{background:#79b544}
   <div class="mapSide"><button type="button" id="mapDaily" aria-label="Günün bölümü">📅<span>Günlük</span></button><button type="button" id="mapTour" aria-label="Haftalık turnuva">🏆<span>Turnuva</span></button><button type="button" id="mapFarm" aria-label="Çiftliğim">🐣<span>Çiftliğim</span></button><button type="button" id="mapFr" aria-label="Arkadaşlar">👥<span>Arkadaş</span></button></div>
   <div class="mapZoom"><button type="button" id="mapZi" aria-label="Yakınlaştır">+</button><button type="button" id="mapZo" aria-label="Uzaklaştır">−</button></div>
   <button class="mapGo" id="mapGo" type="button">Oyna</button>
-  <span class="mapVer">Sürüm 2026.11.24-18</span>
+  <span class="mapVer">Sürüm 2026.11.24-19</span>
 </div>
 <div class="pop" id="pop" hidden><div class="pcard" id="pcard" role="dialog" aria-modal="true" aria-label="Pencere"></div></div>
 <div class="farm" id="farm" hidden>
@@ -450,7 +451,7 @@ html.mapbg,html.mapbg body{background:#79b544}
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-18</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-19</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -756,9 +757,16 @@ const cv=$('cv'),cx=cv.getContext('2d'),stage=$('stage');
 const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- kayıt ---------- */
-try{if(navigator.standalone||matchMedia('(display-mode: standalone),(display-mode: fullscreen)').matches)document.documentElement.classList.add('pwa');}catch(e){}
-function vbUpdate(){try{const vv=window.visualViewport,full=Math.max(window.innerHeight,document.documentElement.clientHeight),ref=document.querySelector('.map:not([hidden])')||document.querySelector('.wrap');
-  const H=ref?ref.getBoundingClientRect().height:full,vis=vv?vv.height+vv.offsetTop:window.innerHeight;document.documentElement.style.setProperty('--vb',Math.max(0,Math.round(H-vis))+'px');}catch(e){}}
+const STANDALONE=(()=>{try{return !!(navigator.standalone||matchMedia('(display-mode: standalone),(display-mode: fullscreen)').matches);}catch(e){return false;}})();
+const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+if(STANDALONE&&IOS)document.documentElement.classList.add('pwa');
+addEventListener('orientationchange',()=>setTimeout(()=>{vbUpdate();dispatchEvent(new Event('resize'));},250));
+function vbUpdate(){try{const R=document.documentElement;
+  if(STANDALONE&&IOS){ // iOS ana ekran uygulaması: tam ekran yüksekliği = cihaz ekranı
+    const port=matchMedia('(orientation: portrait)').matches,sw=screen.width,sh=screen.height,h=port?Math.max(sw,sh):Math.min(sw,sh);
+    R.style.setProperty('--appH',Math.max(h,window.innerHeight)+'px');R.style.setProperty('--vb','0px');return;}
+  const vv=window.visualViewport,ref=document.querySelector('.map:not([hidden])')||document.querySelector('.wrap');
+  const H=ref?ref.getBoundingClientRect().height:window.innerHeight,vis=vv?vv.height+vv.offsetTop:window.innerHeight;R.style.setProperty('--vb',Math.max(0,Math.round(H-vis))+'px');}catch(e){}}
 addEventListener('resize',vbUpdate);try{visualViewport.addEventListener('resize',vbUpdate);visualViewport.addEventListener('scroll',vbUpdate);}catch(e){}setTimeout(vbUpdate,50);setInterval(vbUpdate,1500);
 const KEY='kirilmasin.v4'; // v4: 24 Kasım sıfırlaması, kayıtlı kullanıcı adları
 const SCOL=window.FIREBASE_CONFIG?'players':'scores';
@@ -1052,10 +1060,10 @@ const MAP=(()=>{
   }
   function open(){
     $('ovRes').hidden=true;$('ovMenu').hidden=true;if(typeof aim!=='undefined')aim=null;
-    el.hidden=false;mapOpen=true;document.body.classList.add('map-on');document.documentElement.classList.add('mapbg');vbUpdate();build();
+    el.hidden=false;mapOpen=true;document.body.classList.add('map-on');vbUpdate();build();
     sc.scrollTop=Math.max(0,yr2y(raw[cur])*Z-Hv*.58);draw();$('mapZo').disabled=Z<=ZMIN+.001;$('mapZi').disabled=Z>=ZMAX-.001;
   }
-  function close(){el.hidden=true;mapOpen=false;document.body.classList.remove('map-on');document.documentElement.classList.remove('mapbg');vbUpdate();}
+  function close(){el.hidden=true;mapOpen=false;document.body.classList.remove('map-on');vbUpdate();}
   addEventListener('resize',()=>{if(!mapOpen)return;const f=sc.scrollTop/Math.max(1,Hc*Z);build();sc.scrollTop=f*Hc*Z;draw();});
   // yakınlaştır / uzaklaştır
   function setZ(nz,ay){nz=Math.max(ZMIN,Math.min(ZMAX,nz));if(Math.abs(nz-Z)<.001)return;if(ay==null)ay=el.clientHeight/2;const ly=(sc.scrollTop+ay)/Z;Z=nz;applyZ();sc.scrollTop=ly*Z-ay;draw();try{localStorage.setItem(KEY+'.mapz',Z.toFixed(3));}catch(e){}
