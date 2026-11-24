@@ -298,6 +298,9 @@ button.fitem{cursor:pointer}
 .bars li em{font-style:normal;color:#b3561a;font-weight:800}
 @media (orientation:landscape){.farm{grid-template-columns:1.35fr 1fr;grid-template-rows:auto 1fr}.farmTop{grid-column:1/-1}.farm canvas{grid-row:2}.farmPanel{grid-row:2}}
 .rshare{margin-top:8px}
+.gmn{color:#ffd23f!important;font-weight:800;text-shadow:0 1px 0 rgba(0,0,0,.5),0 0 6px rgba(255,190,40,.45)}
+.pin b.gmn{background:#3a2208!important}
+.hud .who.gm,.mapTop #mapWho.gm{color:#ffd23f!important}
 .rgoals{list-style:none;margin:4px 0 12px;padding:0;display:grid;gap:6px}
 .rgoals li{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.06);font-size:.88rem;color:var(--muted)}
 .rgoals li span{flex:1}
@@ -385,7 +388,7 @@ html,body{background:#2f1f12}
   <div class="mapSide"><button type="button" id="mapDaily" aria-label="Günün bölümü">📅<span>Günlük</span></button><button type="button" id="mapTour" aria-label="Haftalık turnuva">🏆<span>Turnuva</span></button><button type="button" id="mapFarm" aria-label="Çiftliğim">🐣<span>Çiftliğim</span></button><button type="button" id="mapFr" aria-label="Arkadaşlar">👥<span>Arkadaş</span></button></div>
   <div class="mapZoom"><button type="button" id="mapZi" aria-label="Yakınlaştır">+</button><button type="button" id="mapZo" aria-label="Uzaklaştır">−</button></div>
   <button class="mapGo" id="mapGo" type="button">Oyna</button>
-  <span class="mapVer">Sürüm 2026.11.24-20</span>
+  <span class="mapVer">Sürüm 2026.11.24-21</span>
 </div>
 <div class="pop" id="pop" hidden><div class="pcard" id="pcard" role="dialog" aria-modal="true" aria-label="Pencere"></div></div>
 <div class="farm" id="farm" hidden>
@@ -451,7 +454,7 @@ html,body{background:#2f1f12}
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-20</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-21</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -766,8 +769,10 @@ function vbUpdate(){try{const R=document.documentElement;
   const vv=window.visualViewport,ref=document.querySelector('.map:not([hidden])')||document.querySelector('.wrap');
   const H=ref?ref.getBoundingClientRect().height:window.innerHeight,vis=vv?vv.height+vv.offsetTop:window.innerHeight;R.style.setProperty('--vb',Math.max(0,Math.round(H-vis))+'px');}catch(e){}}
 addEventListener('resize',vbUpdate);try{visualViewport.addEventListener('resize',vbUpdate);visualViewport.addEventListener('scroll',vbUpdate);}catch(e){}setTimeout(vbUpdate,50);setInterval(vbUpdate,1500);
-const KEY='kirilmasin.v4'; // v4: 24 Kasım sıfırlaması, kayıtlı kullanıcı adları
-const SCOL=window.FIREBASE_CONFIG?'players':'scores';
+const KEY='kirilmasin.v5'; // v5: 24 Kasım 14:50 sıfırlaması
+const SCOL=window.FIREBASE_CONFIG?'players2':'scores',NCOL='names2';
+const gmName=(n,gm)=>gm?'[GM] '+n:n;
+const nmH=(n,gm)=>gm?`<span class="gmn">[GM] ${esc(n)}</span>`:esc(n);
 let save={stars:{}};
 try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.stars)save=s;}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}}
@@ -1043,17 +1048,17 @@ const MAP=(()=>{
       b.addEventListener('click',()=>{if(!open){b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');tip('Önce önceki bölümü geç');return;}close();mode=null;startLevel(i);});
       frag.appendChild(b);}
     // işaret
-    {const y=yr2y(raw[cur]),p=document.createElement('div');p.className='pin';p.style.left=roadX(y)+'px';p.style.top=y+'px';p.innerHTML=PIN+`<b>${(player||'Sen').replace(/[<>&]/g,'')}</b>`;frag.appendChild(p);}
+    {const y=yr2y(raw[cur]),p=document.createElement('div');p.className='pin';p.style.left=roadX(y)+'px';p.style.top=y+'px';p.innerHTML=PIN+`<b${save.gm?' class="gmn"':''}>${esc(gmName(player||'Sen',save.gm))}</b>`;frag.appendChild(p);}
     // arkadaşlar
     {const by={};friendMarks().forEach(f=>{const lv=Math.max(0,Math.min(N-1,f.lv)),k=(by[lv]=(by[lv]||0)+1)-1,y=yr2y(raw[lv])+k*30-(lv===cur?0:0),x=roadX(yr2y(raw[lv]));
-      const m=document.createElement('div');m.className='fmark';m.style.left=(x-36)+'px';m.style.top=y+'px';m.innerHTML=`<b>${esc(f.name)}</b><i style="background:${avColor(f.name)}">${esc((f.name[0]||'?').toUpperCase())}</i>`;frag.appendChild(m);});}
+      const m=document.createElement('div');m.className='fmark';m.style.left=(x-36)+'px';m.style.top=y+'px';m.innerHTML=`<b>${nmH(f.name,f.gm)}</b><i style="background:${avColor(f.name)}">${esc((f.name[0]||'?').toUpperCase())}</i>`;frag.appendChild(m);});}
     signs.forEach(s=>{const ch=CHAPTERS[s.ch];if(!ch)return;const y=yr2y(s.r),rx=roadX(y),x=rx>cx?Math.max(80,rx-Math.min(A+30,180)):Math.min(Wv-80,rx+Math.min(A+30,180));
       const ids=LEVELS.map((_,i)=>i).filter(i=>LEVELS[i].chapter===s.ch);let cs=0;ids.forEach(i=>cs+=starsOf(i)+bonusOf(i));
       const d=document.createElement('div');d.className='csign';d.style.left=(Math.abs(x-rx)<90?(rx>cx?rx-130:rx+130):x)+'px';d.style.top=y+'px';d.innerHTML=`<span class="pl">${ch.name}<small>${cs} / ${ids.length*5} ★</small></span>`;frag.appendChild(d);});
     plane.appendChild(frag);
     [...plane.children].forEach(ch=>{const a=document.createElement('div');a.className='anc';a.dataset.x=parseFloat(ch.style.left)||0;a.dataset.y=parseFloat(ch.style.top)||0;ch.style.left='0px';ch.style.top='0px';plane.insertBefore(a,ch);a.appendChild(ch);});applyZ();
     $('mapStars').textContent=`★ ${total()} / ${MAXST()}`;{const k=$('mapStreak');k.hidden=!(save.streak&&save.streak.n>0&&save.streak.last===dayKey());k.textContent=`🔥 ${save.streak.n}`;}
-    {const b=$('mapDaily');let dt=b.querySelector('.dot');const need=!(save.daily&&save.daily.k===dayKey()&&save.daily.st>0);if(need&&!dt){dt=document.createElement('i');dt.className='dot';b.appendChild(dt);}if(!need&&dt)dt.remove();}$('mapWho').textContent=player||'Oyuncu';$('mapSnd').textContent=sound?'♪':'×';
+    {const b=$('mapDaily');let dt=b.querySelector('.dot');const need=!(save.daily&&save.daily.k===dayKey()&&save.daily.st>0);if(need&&!dt){dt=document.createElement('i');dt.className='dot';b.appendChild(dt);}if(!need&&dt)dt.remove();}whoUI();$('mapSnd').textContent=sound?'♪':'×';
     $('mapGo').textContent=`Oyna · Bölüm ${cur+1}`;
   }
   function open(){
@@ -2258,7 +2263,7 @@ function makeCode(){const p=[player,total(),lvStr(),Date.now()].join('|');return
 function parseCodes(text){const out=[];const re=/KR1-([A-Za-z0-9._]+)-([0-9a-z]+)/g;let m;while((m=re.exec(text))){try{const p=b64d(m[1]);if(hsh(p+SALT)!==m[2])continue;const[a,b,c,d]=p.split('|');const name=(a||'').trim().slice(0,20),stars=+b,ts=+d;if(!name||!(stars>=0&&stars<=LEVELS.length*3))continue;out.push({name,stars,levels:String(c||''),done:String(c||'').split('').filter(x=>+x>0).length,at:ts||Date.now()});}catch(e){}}return out;}
 function shareMsg(){return `Kırılmasın! oyununda ${total()}/${LEVELS.length*3} yıldız topladım (${doneN()}/${LEVELS.length} bölüm). Skor kodum: ${makeCode()}`;}
 
-function setPlayer(n){player=n.trim().slice(0,20);try{localStorage.setItem(KEY+'.name',player);}catch(e){}$('bWho').textContent=player||'Oyuncu';pushScore();renderBoard();MAP.refresh();}
+function setPlayer(n){player=n.trim().slice(0,20);try{localStorage.setItem(KEY+'.name',player);}catch(e){}whoUI();pushScore();renderBoard();MAP.refresh();}
 const nameKey=n=>n.trim().replace(/\s+/g,' ').toLocaleLowerCase('tr');
 const nameOk=n=>/^[\p{L}\p{N} _.\-]{2,20}$/u.test(n)&&/\p{L}/u.test(n);
 function askName(){if(player)return showProfile();$('nameIn').value='';$('nameErr').textContent='';$('ovName').hidden=false;setTimeout(()=>$('nameIn').focus(),30);}
@@ -2269,19 +2274,29 @@ async function register(v){
   const me=direct.find(d=>d.id===myId);if(me&&me.name)return me.name; // bu cihaz zaten kayıtlı
   const k=nameKey(v);
   if(direct.some(d=>d.id!==myId&&nameKey(d.name)===k))throw new Error('Bu ad alınmış, başka bir ad seç.');
-  if(window.FIREBASE_CONFIG){const ref=DB.collection('names').doc(k);let snap;try{snap=await ref.get();}catch(e){throw new Error('Bağlanılamadı ('+(e.code||'hata')+'). Tekrar dene.');}
+  if(window.FIREBASE_CONFIG){const ref=DB.collection(NCOL).doc(k);let snap;try{snap=await ref.get();}catch(e){throw new Error('Bağlanılamadı ('+(e.code||'hata')+'). Tekrar dene.');}
     if(snap.exists){if(snap.data().uid!==myId)throw new Error('Bu ad alınmış, başka bir ad seç.');}
     else{try{await ref.set({uid:myId,name:v,at:Date.now()});}catch(e){throw new Error(e&&e.code==='permission-denied'?'Bu ad alınmış ya da bu cihaz zaten kayıtlı.':'Kaydedilemedi ('+(e.code||'hata')+'). Tekrar dene.');}}}
   return v;}
+async function gmActivate(code){
+  for(let k=0;k<40&&!(DB&&myId&&(dbState==='ok'||dbState==='slow'));k++){if(dbState==='off'&&k>4)break;await sleep(250);}
+  if(!DB||!myId||!window.FIREBASE_CONFIG)throw new Error('Bağlanılamadı. Tekrar dene.');
+  try{await DB.collection('gm').doc(myId).set({k:code,at:Date.now()});}catch(e){throw new Error('Bu kod geçersiz.');}
+  const ref=DB.collection(NCOL).doc('mert');const snap=await ref.get();
+  if(snap.exists){if(snap.data().uid!==myId)throw new Error('MERT adı başka bir cihazda kayıtlı.');}else await ref.set({uid:myId,name:'MERT',at:Date.now()});
+  save.gm=1;persist();return 'MERT';}
 $('nameForm').addEventListener('submit',async e=>{e.preventDefault();const v=$('nameIn').value.trim().replace(/\s+/g,' '),er=$('nameErr'),b=$('nameGo');
+  if(v.startsWith('#')){b.disabled=true;er.textContent='Kontrol ediliyor…';try{const n=await gmActivate(v.slice(1).trim());setPlayer(n);$('ovName').hidden=true;er.textContent='';if(typeof afterIntro==='function')setTimeout(afterIntro,200);}catch(x){er.textContent=x.message;}b.disabled=false;return;}
+  if(nameKey(v)==='mert'){er.textContent='Bu ad alınmış, başka bir ad seç.';return;}
   if(!nameOk(v)){er.textContent='2–20 karakter; harf, rakam, boşluk, nokta, tire ya da alt çizgi kullan.';$('nameIn').focus();return;}
   b.disabled=true;er.textContent='Kaydediliyor…';
   try{const n=await register(v);setPlayer(n);$('ovName').hidden=true;er.textContent='';if(typeof afterIntro==='function')setTimeout(afterIntro,200);}
   catch(x){er.textContent=x.message||'Bir sorun oldu, tekrar dene.';}
   b.disabled=false;});
-function showProfile(){openPop(`<p class="k">Profil</p><h2>${esc(player)}</h2><div class="code">#${myCode()}</div><p>Arkadaşların seni bu numarayla ekler. Kullanıcı adın kayıtlıdır ve değiştirilemez.</p>`);}
+function showProfile(){openPop(`<p class="k">Profil</p><h2>${nmH(player,save.gm)}</h2><div class="code">#${myCode()}</div><p>Arkadaşların seni bu numarayla ekler. Kullanıcı adın kayıtlıdır ve değiştirilemez.</p>`);}
 $('bWho').addEventListener('click',askName);
-$('bWho').textContent=player||'Oyuncu';
+function whoUI(){const t=player?gmName(player,save.gm):'Oyuncu';$('bWho').textContent=t;$('bWho').classList.toggle('gm',!!save.gm);const m=$('mapWho');if(m){m.textContent=t;m.classList.toggle('gm',!!save.gm);}}
+whoUI();
 
 let legacyOnly=false,boardTab='all';
 document.querySelectorAll('#bTabs button').forEach(b=>b.addEventListener('click',()=>{boardTab=b.dataset.t;document.querySelectorAll('#bTabs button').forEach(q=>q.setAttribute('aria-pressed',q===b));renderBoard();}));
@@ -2289,7 +2304,7 @@ async function pushScore(){
   if(!DB||!myId||canWrite===false||!player)return;
   if(writing){again=true;return;}
   writing=true;
-  const base={name:player,nk:nameKey(player),stars:total(),done:doneN(),levels:lvStr(),at:Date.now()};
+  const base={name:player,nk:save.gm?'mert':nameKey(player),...(save.gm?{gm:true}:{}),stars:total(),done:doneN(),levels:lvStr(),at:Date.now()};
   try{rollDays();}catch(e){}
   let full=base;try{full={...base,code:myCode(),streak:(save.streak&&save.streak.n)|0,day:save.daily.k||'',ds:save.daily.st|0,dat:save.daily.at|0,wk:save.week.k||'',ws:save.week.s.join(''),lw:save.lw||'',ch:chickTotal()|0,fr:save.friends.join(','),skin:save.skin||'klasik'};}catch(e){}
   try{
@@ -2320,20 +2335,20 @@ function renderBoard(){
   $('bHead').innerHTML=HD.map(h=>`<th>${h}</th>`).join('');
   if(boardTab!=='all'){
     let rows=[];const t=dayKey(),wk=weekKey();
-    if(boardTab==='day')rows=direct.filter(d=>d.day===t&&d.ds>0).sort((a,b)=>b.ds-a.ds||a.dat-b.dat).map(d=>({id:d.id,name:d.name,v:'★'.repeat(d.ds),x:''}));
-    else if(boardTab==='week')rows=weekRows(wk).map(d=>({id:d.id,name:d.name,v:d.ws2+' / 15 ★',x:''}));
-    else{const set=new Set(save.friends);rows=direct.filter(d=>set.has(d.code)||d.id===myId).sort((a,b)=>b.stars-a.stars).map(d=>({id:d.id,name:d.name,v:d.stars+' ★',x:`${curLevelOf(d)+1}/${LEVELS.length}`}));}
+    if(boardTab==='day')rows=direct.filter(d=>d.day===t&&d.ds>0).sort((a,b)=>b.ds-a.ds||a.dat-b.dat).map(d=>({id:d.id,name:d.name,gm:d.gm,v:'★'.repeat(d.ds),x:''}));
+    else if(boardTab==='week')rows=weekRows(wk).map(d=>({id:d.id,name:d.name,gm:d.gm,v:d.ws2+' / 15 ★',x:''}));
+    else{const set=new Set(save.friends);rows=direct.filter(d=>set.has(d.code)||d.id===myId).sort((a,b)=>b.stars-a.stars).map(d=>({id:d.id,name:d.name,gm:d.gm,v:d.stars+' ★',x:`${curLevelOf(d)+1}/${LEVELS.length}`}));}
     st.textContent=boardTab==='day'?`Bugünün bölümü: ${dailyIdx()+1}. bölüm · ${rows.length} oyuncu`:boardTab==='week'?(()=>{const c=champion();return `Bitişe ${dur(weekEnds())}`+(c?` · Geçen haftanın şampiyonu 👑 ${c.name}`:'');})():(save.friends.length?`${save.friends.length} arkadaş · senin numaran #${myCode()}`:`Henüz arkadaşın yok. Haritadaki 👥 düğmesinden #numarayla ekle. Senin numaran #${myCode()}`);
     $('board').hidden=!rows.length;tb.innerHTML='';
     rows.forEach((r,i)=>{const tr=document.createElement('tr');if(i===0)tr.className='lead';if(r.id===myId)tr.classList.add('me');
-      [[i===0&&boardTab==='week'?'👑':i+1,'n'],[r.name,'nm'],[r.v,'st'],[r.x,''],['','']].forEach(([v,c])=>{const td=document.createElement('td');if(c)td.className=c;td.textContent=v;tr.appendChild(td);});tb.appendChild(tr);});
+      [[i===0&&boardTab==='week'?'👑':i+1,'n'],[r.name,'nm'],[r.v,'st'],[r.x,''],['','']].forEach(([v,c])=>{const td=document.createElement('td');if(c)td.className=c;if(c==='nm')td.innerHTML=nmH(v,r.gm);else td.textContent=v;tr.appendChild(td);});tb.appendChild(tr);});
   }else
   if(dbState==='ok'||dbState==='slow'||list.length){
     if(dbState==='ok')st.textContent=list.length?`${list.length} oyuncu`:'Henüz kimse skor göndermedi. İlk sen ol.';
     $('board').hidden=!list.length;tb.innerHTML='';
     list.forEach((r,i)=>{const tr=document.createElement('tr');if(i===0&&r.stars>0)tr.className='lead';if(player&&r.name.toLowerCase()===player.toLowerCase())tr.classList.add('me');
       const td=(c,t)=>{const x=document.createElement('td');if(c)x.className=c;x.textContent=t;tr.appendChild(x);return x;};
-      td('n',i+1);td('nm',r.name);td('st',r.stars+' ★');td('',`${r.done}/${LEVELS.length}`);
+      td('n',i+1);td('nm',r.name);if(r.gm){const q=tr.lastChild;q.innerHTML=nmH(r.name,true);}td('st',r.stars+' ★');td('',`${r.done}/${LEVELS.length}`);
       const last=td('','');
       if(owner){const b=document.createElement('button');b.className='del';b.type='button';b.textContent='Sil';b.setAttribute('aria-label',r.name+' satırını sil');
         b.addEventListener('click',async()=>{b.disabled=true;try{const tasks=[];direct.filter(x=>x.name.toLowerCase()===r.name.toLowerCase()).forEach(x=>tasks.push(DB.collection(SCOL).doc(x.id).delete()));manual.filter(x=>x.name.toLowerCase()===r.name.toLowerCase()).forEach(x=>tasks.push(DB.collection('manual').doc(x.id).delete()));await Promise.all(tasks);}catch(e){b.disabled=false;}});
@@ -2361,7 +2376,7 @@ $('bAdd').addEventListener('click',async()=>{
     try{await DB.collection('manual').doc(id).set(r);n++;}catch(e){note.textContent='Eklenemedi: '+(e&&e.code||'hata');}}
   $('bAdd').disabled=false;if(n){note.textContent=`${n} skor eklendi.`;$('codeIn').value='';}else if(!note.textContent.startsWith('Eklenemedi'))note.textContent='Bu skorlar zaten tabloda (aynı ya da daha yüksek).';
 });
-const clean=d=>{const x=d.data()||{};return{id:d.id,name:String(x.name||'').slice(0,20)||'İsimsiz',stars:Math.max(0,Math.min(LEVELS.length*3,+x.stars||0)),done:Math.max(0,Math.min(LEVELS.length,+x.done||0)),at:+x.at||0,levels:String(x.levels||''),code:+x.code||0,streak:+x.streak||0,day:String(x.day||''),ds:Math.max(0,Math.min(3,+x.ds||0)),dat:+x.dat||0,wk:String(x.wk||''),ws:String(x.ws||''),lw:String(x.lw||''),ch:+x.ch||0,fr:String(x.fr||''),skin:String(x.skin||'')};};
+const clean=d=>{const x=d.data()||{};return{id:d.id,name:String(x.name||'').slice(0,20)||'İsimsiz',stars:Math.max(0,Math.min(LEVELS.length*3,+x.stars||0)),done:Math.max(0,Math.min(LEVELS.length,+x.done||0)),at:+x.at||0,levels:String(x.levels||''),code:+x.code||0,streak:+x.streak||0,day:String(x.day||''),ds:Math.max(0,Math.min(3,+x.ds||0)),dat:+x.dat||0,wk:String(x.wk||''),ws:String(x.ws||''),lw:String(x.lw||''),ch:+x.ch||0,fr:String(x.fr||''),skin:String(x.skin||''),gm:x.gm===true};};
 (async()=>{
   try{
     let db=null;
@@ -2516,10 +2531,10 @@ function afterIntro(){if(introDone)return;introDone=true;streakTouch();pushScore
 const docByCode=c=>direct.find(d=>d.code===c);
 const curLevelOf=d=>{const s=d.levels||'';const k=s.indexOf('0');return k<0?(s.length?Math.min(s.length,LEVELS.length-1):d.done||0):k;};
 function showFriends(){
-  const render=()=>{const me={name:player||'Sen',stars:total(),me:1,code:myCode(),lv:LEVELS.findIndex((_,i)=>!starsOf(i))};
-    const list=save.friends.map(c=>{const d=docByCode(c);return d?{name:d.name,stars:d.stars,code:c,lv:curLevelOf(d)}:{name:'Bekleniyor',stars:0,code:c,lv:-1,wait:1};});
+  const render=()=>{const me={name:player||'Sen',gm:!!save.gm,stars:total(),me:1,code:myCode(),lv:LEVELS.findIndex((_,i)=>!starsOf(i))};
+    const list=save.friends.map(c=>{const d=docByCode(c);return d?{name:d.name,gm:d.gm,stars:d.stars,code:c,lv:curLevelOf(d)}:{name:'Bekleniyor',stars:0,code:c,lv:-1,wait:1};});
     const all=[me,...list].sort((a,b)=>b.stars-a.stars);
-    $('frList').innerHTML=all.map(r=>`<li class="${r.me?'me':''}"><span class="av" style="background:${avColor(r.name)}">${esc((r.name||'?')[0].toUpperCase())}</span><span class="nm">${esc(r.name)}${r.me?' (sen)':''}<small>#${r.code}${r.lv>=0?` · Bölüm ${r.lv+1}`:r.wait?' · henüz görünmüyor':''}</small></span><span class="v">${r.stars} ★</span>${r.me?'':`<button class="rm" type="button" data-c="${r.code}" aria-label="${esc(r.name)} arkadaşlıktan çıkar">×</button>`}</li>`).join('');
+    $('frList').innerHTML=all.map(r=>`<li class="${r.me?'me':''}"><span class="av" style="background:${avColor(r.name)}">${esc((r.name||'?')[0].toUpperCase())}</span><span class="nm">${nmH(r.name,r.gm)}${r.me?' (sen)':''}<small>#${r.code}${r.lv>=0?` · Bölüm ${r.lv+1}`:r.wait?' · henüz görünmüyor':''}</small></span><span class="v">${r.stars} ★</span>${r.me?'':`<button class="rm" type="button" data-c="${r.code}" aria-label="${esc(r.name)} arkadaşlıktan çıkar">×</button>`}</li>`).join('');
     $('frList').querySelectorAll('.rm').forEach(b=>b.addEventListener('click',()=>{save.friends=save.friends.filter(c=>c!==+b.dataset.c);persist();pushScore();render();MAP.refresh();}));};
   openPop(`<p class="k">Arkadaşlar</p><h2>Senin numaran</h2><div class="code">#${myCode()}</div><p>Bu numarayı arkadaşına ver; o da seni eklesin.</p>
    <div class="prow" style="margin-top:0"><button class="wb gold" id="frShare" type="button">Numaramı paylaş</button></div>
@@ -2533,8 +2548,8 @@ function showFriends(){
     const d=docByCode(c);if(!d&&dbState==='ok'){N.textContent='Bu numarada oyuncu bulunamadı. Numarayı kontrol et.';return;}
     save.friends.push(c);persist();pushScore();$('frIn').value='';N.textContent=d?`${d.name} eklendi! Haritanda görünecek.`:'Eklendi; bağlantı gelince görünecek.';render();MAP.refresh();});
 }
-function friendMarks(){return save.friends.map(c=>docByCode(c)).filter(Boolean).map(d=>({name:d.name,lv:curLevelOf(d)}));}
-function socialSync(){if(!player&&myId){const me=direct.find(d=>d.id===myId);if(me&&me.name&&me.src!=='kod'){player=me.name;try{localStorage.setItem(KEY+'.name',player);}catch(e){}$('bWho').textContent=player;$('ovName').hidden=true;if(typeof afterIntro==='function')setTimeout(afterIntro,200);}}const me=myId&&direct.find(d=>d.id===myId);if(me&&me.fr&&!save.friends.length){save.friends=me.fr.split(',').map(Number).filter(n=>n>=10000&&n<=99999);persist();}MAP.refresh();}
+function friendMarks(){return save.friends.map(c=>docByCode(c)).filter(Boolean).map(d=>({name:d.name,gm:d.gm,lv:curLevelOf(d)}));}
+function socialSync(){if(!player&&myId){const me=direct.find(d=>d.id===myId);if(me&&me.name&&me.src!=='kod'){player=me.name;if(me.gm){save.gm=1;persist();}try{localStorage.setItem(KEY+'.name',player);}catch(e){}$('bWho').textContent=player;$('ovName').hidden=true;if(typeof afterIntro==='function')setTimeout(afterIntro,200);}}const me=myId&&direct.find(d=>d.id===myId);if(me&&me.fr&&!save.friends.length){save.friends=me.fr.split(',').map(Number).filter(n=>n>=10000&&n<=99999);persist();}MAP.refresh();}
 
 /* ---- günün bölümü ve turnuva ---- */
 function showDaily(){rollDays();const i=dailyIdx(),t=dayKey();
@@ -2542,7 +2557,7 @@ function showDaily(){rollDays();const i=dailyIdx(),t=dayKey();
   openPop(`<p class="k">Günün bölümü · ${new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'long'})}</p><h2>${esc(LEVELS[i].name)}</h2><p>Bugün herkes aynı bölümü oynuyor. En çok yıldızı en önce alan zirvede!</p>
    <p style="font-weight:800">Bugünkü en iyin: ${save.daily.st?'★'.repeat(save.daily.st):'henüz yok'}</p>
    <div class="prow"><button class="wb red" id="dGo" type="button">${save.daily.st?'Tekrar dene':'Oyna'}</button></div>
-   <ul class="plist">${rows.length?rows.map((r,k)=>`<li class="${r.id===myId?'me':''}"><span class="av" style="background:${avColor(r.name)}">${k+1}</span><span class="nm">${esc(r.name)}</span><span class="v">${'★'.repeat(r.ds)}</span></li>`).join(''):'<li><span class="nm" style="font-weight:600">Bugün henüz kimse bitirmedi. İlk sen ol!</span></li>'}</ul>`);
+   <ul class="plist">${rows.length?rows.map((r,k)=>`<li class="${r.id===myId?'me':''}"><span class="av" style="background:${avColor(r.name)}">${k+1}</span><span class="nm">${nmH(r.name,r.gm)}</span><span class="v">${'★'.repeat(r.ds)}</span></li>`).join(''):'<li><span class="nm" style="font-weight:600">Bugün henüz kimse bitirmedi. İlk sen ol!</span></li>'}</ul>`);
   $('dGo').addEventListener('click',()=>playMode({type:'daily'},i));}
 function weekRows(k){return direct.map(d=>{let s=0;if(d.wk===k)s=[...(d.ws||'')].reduce((a,b)=>a+(+b||0),0);else if(d.lw&&d.lw.startsWith(k+':'))s=+d.lw.split(':')[1]||0;return{...d,ws2:s};}).filter(d=>d.ws2>0).sort((a,b)=>b.ws2-a.ws2||a.at-b.at);}
 function champion(){const r=weekRows(prevWeekKey());return r.length?r[0]:null;}
@@ -2551,7 +2566,7 @@ function showTour(){rollDays();const ids=weekIdx(),wk=weekKey(),sum=save.week.s.
    ${cp?`<p style="font-weight:800">👑 Geçen haftanın şampiyonu: ${esc(cp.name)} (${cp.ws2} ★)</p>`:''}
    <div class="lvpick">${ids.map((i,k)=>`<button type="button" data-k="${k}">${i+1}<small>${[0,1,2].map(q=>`<i class="${q<save.week.s[k]?'on':''}">★</i>`).join('')}</small></button>`).join('')}</div>
    <p style="font-weight:800">Senin toplamın: ${sum} / 15 ★</p>
-   <ul class="plist">${rows.length?rows.map((r,k)=>`<li class="${r.id===myId?'me':''}"><span class="av" style="background:${avColor(r.name)}">${k===0?'👑':k+1}</span><span class="nm">${esc(r.name)}</span><span class="v">${r.ws2} ★</span></li>`).join(''):'<li><span class="nm" style="font-weight:600">Bu hafta henüz kimse puan almadı.</span></li>'}</ul>`);
+   <ul class="plist">${rows.length?rows.map((r,k)=>`<li class="${r.id===myId?'me':''}"><span class="av" style="background:${avColor(r.name)}">${k===0?'👑':k+1}</span><span class="nm">${nmH(r.name,r.gm)}</span><span class="v">${r.ws2} ★</span></li>`).join(''):'<li><span class="nm" style="font-weight:600">Bu hafta henüz kimse puan almadı.</span></li>'}</ul>`);
   pcard.querySelectorAll('.lvpick button').forEach(b=>b.addEventListener('click',()=>{const k=+b.dataset.k;playMode({type:'week',k,wk},ids[k]);}));}
 
 /* ---- çiftliğim ---- */
