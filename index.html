@@ -243,7 +243,7 @@ body.fs .stage{border-radius:6px;width:100%!important;min-width:0;aspect-ratio:a
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-2</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-3</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -1675,7 +1675,7 @@ function frame(now){
 
 /* ---------- oyuncu ve skor tablosu ---------- */
 let player='';try{player=localStorage.getItem(KEY+'.name')||'';}catch(e){}
-let DB=null,myId=null,canWrite=null,owner=false,dbState='off',direct=[],manual=[],writing=false,again=false,loadT=null;
+let fbErr='',DB=null,myId=null,canWrite=null,owner=false,dbState='off',direct=[],manual=[],writing=false,again=false,loadT=null;
 const total=()=>{let t=0;LEVELS.forEach((_,i)=>t+=starsOf(i));return t;};
 const doneN=()=>LEVELS.filter((_,i)=>starsOf(i)>0).length;
 const lvStr=()=>LEVELS.map((_,i)=>starsOf(i)).join('');
@@ -1698,7 +1698,7 @@ async function pushScore(){
   if(writing){again=true;return;}
   writing=true;
   try{await DB.collection('scores').doc(myId).set({name:player,stars:total(),done:doneN(),levels:lvStr(),at:Date.now()});canWrite=true;}
-  catch(e){if(e&&(e.code==='invalid_argument'||e.code==='revoked'||e.code==='not_granted'))canWrite=false;}
+  catch(e){if(e&&(e.code==='invalid_argument'||e.code==='revoked'||e.code==='not_granted'||e.code==='permission-denied'))canWrite=false;if(window.FIREBASE_CONFIG)fbErr='yazma: '+((e&&(e.code||e.message))||'?');}
   writing=false;renderBoard();
   if(again){again=false;pushScore();}
 }
@@ -1711,7 +1711,7 @@ function merged(){
 function renderBoard(){
   $('myName').textContent=player||'—';$('myStars').textContent=total();
   const st=$('bStatus'),tb=$('bRows');
-  if(dbState==='off'){st.textContent=window.FIREBASE_CONFIG?'Skor tablosuna bağlanılamadı. İnternet bağlantını kontrol et.':'Skor tablosu bu görünümde açılamıyor. Claude hesabına giriş yapmış olarak açınca görünür. Skor kodunu yine de kopyalayıp Mert’e gönderebilirsin.';$('board').hidden=true;}
+  if(dbState==='off'){st.textContent=window.FIREBASE_CONFIG?('Skor tablosuna bağlanılamadı. İnternet bağlantını kontrol et.'+(fbErr?' (Hata: '+fbErr+')':(window.firebase?'':' (Hata: Firebase kütüphanesi yüklenemedi)'))):'Skor tablosu bu görünümde açılamıyor. Claude hesabına giriş yapmış olarak açınca görünür. Skor kodunu yine de kopyalayıp Mert’e gönderebilirsin.';$('board').hidden=true;}
   else if(dbState==='loading'){st.textContent='Skorlar yükleniyor…';}
   else if(dbState==='slow'){st.textContent='Skorlara şu an ulaşılamıyor; bağlantı gelince kendiliğinden yenilenir.';}
   const list=merged();
@@ -1728,7 +1728,7 @@ function renderBoard(){
       else if(r.src==='kod'){const sp=document.createElement('span');sp.className='src';sp.textContent='kodla';last.appendChild(sp);}
       tb.appendChild(tr);});
   }
-  $('myNote').textContent=!DB?'':canWrite===true?'Skorun tabloya kendiliğinden işleniyor.':canWrite===false?'Skorun buraya kendiliğinden yazılamıyor. Kodunu kopyalayıp Mert’e gönder; o tabloya ekler.':'';
+  $('myNote').textContent=fbErr&&DB?('Skorun kaydedilemedi (Hata: '+fbErr+')'):!DB?'':canWrite===true?'Skorun tabloya kendiliğinden işleniyor.':canWrite===false?'Skorun buraya kendiliğinden yazılamıyor. Kodunu kopyalayıp Mert’e gönder; o tabloya ekler.':'';
   if($('admin'))$('admin').hidden=!owner;
 }
 $('bBoard').addEventListener('click',()=>{renderBoard();$('codeBox').hidden=true;$('ovBoard').hidden=false;$('bBoardClose').focus();});
@@ -1754,8 +1754,11 @@ const clean=d=>{const x=d.data()||{};return{id:d.id,name:String(x.name||'').slic
     let db=null;
     if(window.FIREBASE_CONFIG&&window.firebase){
       // telefon sürümü: Firebase (anonim giriş + Firestore)
-      try{firebase.initializeApp(window.FIREBASE_CONFIG);const cred=await firebase.auth().signInAnonymously();myId=cred.user.uid;db=firebase.firestore();
-        $('admin').remove&&$('admin').remove();}catch(e){renderBoard();return;}
+      try{if(!firebase.apps.length)firebase.initializeApp(window.FIREBASE_CONFIG);
+        try{firebase.firestore().settings({experimentalAutoDetectLongPolling:true,merge:true});}catch(e){}
+        const cred=await firebase.auth().signInAnonymously();myId=cred.user.uid;db=firebase.firestore();
+        $('admin').remove&&$('admin').remove();}
+      catch(e){fbErr=(e&&(e.code||e.message))||'bilinmeyen hata';renderBoard();return;}
     }else{
       const c=window.claude;if(!c||typeof c.use!=='function'){renderBoard();return;}
       const[db2,u]=await Promise.all([c.use('db'),c.use('user')]);db=db2;
@@ -1765,7 +1768,7 @@ const clean=d=>{const x=d.data()||{};return{id:d.id,name:String(x.name||'').slic
     DB=db;dbState='loading';renderBoard();
     loadT=setTimeout(()=>{if(dbState==='loading'){dbState='slow';renderBoard();}},10000);
     const ok=()=>{clearTimeout(loadT);dbState='ok';};
-    DB.collection('scores').onSnapshot(s=>{direct=s.docs.filter(d=>d.exists).map(clean);if(!s.metadata.fromCache)ok();renderBoard();},()=>{clearTimeout(loadT);dbState='ok';renderBoard();});
+    DB.collection('scores').onSnapshot(s=>{direct=s.docs.filter(d=>d.exists).map(clean);if(!s.metadata.fromCache)ok();renderBoard();},(er)=>{clearTimeout(loadT);dbState='off';fbErr='okuma: '+((er&&(er.code||er.message))||'?');renderBoard();});
     if(!window.FIREBASE_CONFIG)DB.collection('manual').onSnapshot(s=>{manual=s.docs.filter(d=>d.exists).map(clean);if(!s.metadata.fromCache)ok();renderBoard();},()=>{});
     if(!myId)canWrite=false;
     pushScore();
