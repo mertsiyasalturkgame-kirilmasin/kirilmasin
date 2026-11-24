@@ -71,7 +71,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1
 .board td.st{color:var(--accent);font-weight:800;white-space:nowrap}
 .board td.nm{max-width:12em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .board tr.me td{background:rgba(255,169,77,.08)}
-.board tr.lead td.nm::after{content:" 👑"}
+
 .board .del{font:inherit;font-size:.75rem;color:var(--muted);background:none;border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:2px 7px;cursor:pointer}
 .board .src{font-size:.72rem;color:var(--muted)}
 .note{font-size:.88rem;color:var(--muted);margin:0 0 12px}
@@ -427,7 +427,7 @@ html,body{background:#2f1f12}
   <div class="mapSide"><button type="button" id="mapDaily" aria-label="Günün bölümü">📅<span>Günlük</span></button><button type="button" id="mapTour" aria-label="Haftalık turnuva">🏆<span>Turnuva</span></button><button type="button" id="mapFarm" aria-label="Çiftliğim">🐣<span>Çiftliğim</span></button><button type="button" id="mapFr" aria-label="Arkadaşlar">👥<span>Arkadaş</span></button><button type="button" id="mapMod" aria-label="Diğer modlar">🎮<span>Modlar</span></button></div>
   <div class="mapZoom"><button type="button" id="mapZi" aria-label="Yakınlaştır">+</button><button type="button" id="mapZo" aria-label="Uzaklaştır">−</button></div>
   <button class="mapGo" id="mapGo" type="button">Oyna</button>
-  <span class="mapVer">Sürüm 2026.11.24-30</span>
+  <span class="mapVer">Sürüm 2026.11.24-31</span>
 </div>
 <div class="tutor" id="tutor" hidden role="dialog" aria-live="polite" aria-labelledby="tuH">
   <svg class="hen" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="30" cy="42" rx="20" ry="16" fill="#b5612f"/><path d="M12 40q-8-10 2-16 2 8 8 10z" fill="#7a3a18"/><circle cx="42" cy="24" r="11" fill="#c46d38"/><path d="M36 13q2-6 5-1 2-6 5 0 3-5 5 2-8 3-15-1z" fill="#d42a1e"/><path d="M52 24l8 3-8 3z" fill="#f0a020"/><path d="M46 31q3 6-1 8-3-3 1-8z" fill="#d42a1e"/><circle cx="45" cy="22" r="2.2" fill="#1b1b1b"/><circle cx="45.7" cy="21.3" r=".7" fill="#fff"/><path d="M24 57v5M34 57v5" stroke="#e0a020" stroke-width="2.4" stroke-linecap="round"/></svg>
@@ -499,7 +499,7 @@ html,body{background:#2f1f12}
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-30</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-31</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -825,7 +825,7 @@ const TITLES=[['🥇','Altın Yumurta'],['🥈','Gümüş Gaga'],['🥉','Bronz 
 function titleKey(ms){const d=new Date((ms||Date.now())+3*36e5);const back=(d.getUTCDay()-3+7)%7;d.setUTCDate(d.getUTCDate()-back);return d.toISOString().slice(0,10);}
 const prevTitleKey=()=>titleKey(Date.now()-7*864e5);
 function titleEnds(){const k=titleKey(),d=new Date(k+'T00:00:00Z');return d.getTime()+7*864e5-3*36e5-Date.now();}
-let TT={};function titleCalc(){const cand=[];(typeof direct!=='undefined'?direct:[]).forEach(d=>{if(d.gm||!(d.stars>0))return;cand.push({d,g:d.stars});});
+let TT={};function titleCalc(){const cand=[];(typeof direct!=='undefined'?direct:[]).forEach(d=>{if(!(d.stars>0))return;cand.push({d,g:d.stars});});
   cand.sort((a,b)=>b.g-a.g||a.d.at-b.d.at);TT={};cand.slice(0,3).forEach((c,k)=>{TT[String(c.d.name).toLowerCase()]={r:k,g:c.g,id:c.d.id,name:c.d.name};});return cand.slice(0,3);}
 const titleOf=n=>TT[String(n||'').toLowerCase()];
 const tH=n=>{const t=titleOf(n);return t?` <span class="ttl t${t.r}" title="Haftanın ünvanı">${TITLES[t.r][0]} ${TITLES[t.r][1]}</span>`:'';};
@@ -2842,7 +2842,7 @@ function showFriends(){
     save.friends.push(c);persist();pushScore();$('frIn').value='';N.textContent=d?`${d.name} eklendi! Haritanda görünecek.`:'Eklendi; bağlantı gelince görünecek.';render();MAP.refresh();});
 }
 function friendMarks(){return save.friends.map(c=>docByCode(c)).filter(Boolean).map(d=>({name:d.name,gm:d.gm,lv:curLevelOf(d)}));}
-function socialSync(){try{titleCalc();const me=player&&titleOf(player);if(me&&!save.gm){const best=save.ttlBest==null?9:save.ttlBest;if(me.r<best){save.ttlBest=me.r;persist();setTimeout(()=>toast(`${TITLES[me.r][0]} Sıralamada ${me.r+1}. oldun: "${TITLES[me.r][1]}" ünvanı artık adının yanında!`,false,4200),600);}}else if(!me&&save.ttlBest!=null){save.ttlBest=null;persist();}}catch(e){}if(!socialSync.cl){socialSync.cl=1;clubsLoad();}if(!player&&myId){const me=direct.find(d=>d.id===myId);if(me&&me.name&&me.src!=='kod'){player=me.name;if(me.gm){save.gm=1;persist();}try{localStorage.setItem(KEY+'.name',player);}catch(e){}$('bWho').textContent=player;$('ovName').hidden=true;if(typeof afterIntro==='function')setTimeout(afterIntro,200);}}const me=myId&&direct.find(d=>d.id===myId);if(me&&me.fr&&!save.friends.length){save.friends=me.fr.split(',').map(Number).filter(n=>n>=10000&&n<=99999);persist();}MAP.refresh();}
+function socialSync(){try{titleCalc();const me=player&&titleOf(player);if(me){const best=save.ttlBest==null?9:save.ttlBest;if(me.r<best){save.ttlBest=me.r;persist();setTimeout(()=>toast(`${TITLES[me.r][0]} Sıralamada ${me.r+1}. oldun: "${TITLES[me.r][1]}" ünvanı artık adının yanında!`,false,4200),600);}}else if(!me&&save.ttlBest!=null){save.ttlBest=null;persist();}}catch(e){}if(!socialSync.cl){socialSync.cl=1;clubsLoad();}if(!player&&myId){const me=direct.find(d=>d.id===myId);if(me&&me.name&&me.src!=='kod'){player=me.name;if(me.gm){save.gm=1;persist();}try{localStorage.setItem(KEY+'.name',player);}catch(e){}$('bWho').textContent=player;$('ovName').hidden=true;if(typeof afterIntro==='function')setTimeout(afterIntro,200);}}const me=myId&&direct.find(d=>d.id===myId);if(me&&me.fr&&!save.friends.length){save.friends=me.fr.split(',').map(Number).filter(n=>n>=10000&&n<=99999);persist();}MAP.refresh();}
 
 /* ---- günün bölümü ve turnuva ---- */
 function showDaily(){rollDays();const i=dailyIdx(),t=dayKey();
