@@ -423,7 +423,7 @@ html,body{background:#2f1f12}
   <div class="mapSide"><button type="button" id="mapDaily" aria-label="Günün bölümü">📅<span>Günlük</span></button><button type="button" id="mapTour" aria-label="Haftalık turnuva">🏆<span>Turnuva</span></button><button type="button" id="mapFarm" aria-label="Çiftliğim">🐣<span>Çiftliğim</span></button><button type="button" id="mapFr" aria-label="Arkadaşlar">👥<span>Arkadaş</span></button><button type="button" id="mapMod" aria-label="Diğer modlar">🎮<span>Modlar</span></button></div>
   <div class="mapZoom"><button type="button" id="mapZi" aria-label="Yakınlaştır">+</button><button type="button" id="mapZo" aria-label="Uzaklaştır">−</button></div>
   <button class="mapGo" id="mapGo" type="button">Oyna</button>
-  <span class="mapVer">Sürüm 2026.11.24-25</span>
+  <span class="mapVer">Sürüm 2026.11.24-26</span>
 </div>
 <div class="tutor" id="tutor" hidden role="dialog" aria-live="polite" aria-labelledby="tuH">
   <svg class="hen" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="30" cy="42" rx="20" ry="16" fill="#b5612f"/><path d="M12 40q-8-10 2-16 2 8 8 10z" fill="#7a3a18"/><circle cx="42" cy="24" r="11" fill="#c46d38"/><path d="M36 13q2-6 5-1 2-6 5 0 3-5 5 2-8 3-15-1z" fill="#d42a1e"/><path d="M52 24l8 3-8 3z" fill="#f0a020"/><path d="M46 31q3 6-1 8-3-3 1-8z" fill="#d42a1e"/><circle cx="45" cy="22" r="2.2" fill="#1b1b1b"/><circle cx="45.7" cy="21.3" r=".7" fill="#fff"/><path d="M24 57v5M34 57v5" stroke="#e0a020" stroke-width="2.4" stroke-linecap="round"/></svg>
@@ -495,7 +495,7 @@ html,body{background:#2f1f12}
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-25</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-26</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -796,7 +796,7 @@ if(typeof LEVEL_DATA!=='undefined'){LEVELS.length=0;LEVEL_DATA.forEach(d=>LEVELS
 
 const TAU=Math.PI*2,EGGS=3,PULL=210;
 const SAYINGS=["Tavuk mu yumurtadan çıkar, yumurta mı tavuktan?", "Bugünün yumurtası, yarının tavuğundan iyidir.", "Yumurtaları aynı sepete koyma; ama hepsini aynı yuvaya koy!", "Tavuk masaya çıkamaz ama yumurtası çıkar.", "Buzda kayan yumurta, ipte yürüyen tavuk kadar cesurdur.", "Tavuk uçamaz diyenler trambolini görmemiş.", "Dikenli yoldan geçen yumurta, kümesin kahramanıdır.", "Alçak tavanda yüksek uçan tavuk başını tavana vurur.", "Kaçan yuvaya konan yumurta iki kat tatlıdır.", "Yumurtlayan tavuk gıdaklar; sen de bölümü geçince gıdakla!", "Erken kalkan tavuk yemi önce kapar.", "Aç tavuk kendini arpa ambarında sanır.", "Bant ters dönerse yumurta da tersten düşünür.", "Asansörlü kümes: tavuklar bile modernleşti.", "Yükseğe zıplayan yumurta, yumuşak inmeyi de bilmeli.", "Bir sapan iyi, iki sapan tavuğun rüyası.", "Çok horoz olan yerde sabah geç olur.", "Asansördeki sapan: tavuk bile sırasını bekler.", "Adadan adaya yumurta taşıyan tavuk, kaptan sayılır.", "Tavuk da geri adım atar; yemi arkada görünce.", "Rüzgâr esince tavuğun tüyü kabarır, yumurtası uçar.", "Işınlanan yumurtadan çıkan civciv, nerede doğduğunu bilir mi?", "Fırtınada tavuk kümesini, yumurta yuvasını bilir.", "Mağarada yankılanan tek ses: gıdak gıdak!", "Kapıyı açık bulan tavuk, bahçeyi kendi sanır.", "Fabrika yapamaz, tavuk yapar: el emeği göz nuru yumurta.", "Sapan kıpırdar, yuva kıpırdar; tavuk sabırla bekler.", "Kırılan yumurta geri yapışmaz; tavuktan bir tane daha iste.", "Yumurtayı kim kırarsa, omleti o yapar.", "Tavuğun kanadı kısa, hayali uzun.", "Yumurtayı kıran değil, yuvaya koyan kazanır.", "Saman altından su yürütme, yumurta yürüt.", "Gıdaklamadan önce yumurtayı gör.", "Kümesin sabahı horozla, oyunun sabahı atışla başlar.", "Rüzgâra karşı atan, iki kere düşünür.", "Yağmurda yumurta da ıslanır, sen dikkat et.", "Kuş uçar, yumurta düşer; ikisi karşılaşmasın.", "Gece karanlık ama fener yuvayı gösterir.", "Sapan gergin, tavuk sakin.", "Lastik zıplatır, saman tutar, tel affetmez.", "Ahırda iş biter mi? Bir yumurta daha!", "Tavuk yürür, yumurta uçar.", "Sepette üç yumurta, kafada bin plan.", "Civciv sesi en güzel alkıştır.", "Bant döner, yumurta sabreder.", "Fıçıdan giren, nereden çıkacağını bilmeli.", "Değirmen döner, tavuk bekler.", "Tarla geniş, yuva dar.", "Bir atış bin pişmanlıktan iyidir.", "Kanatlı yumurta tavuktan hızlı uçar.", "Ekstra yumurta, ekstra umut.", "Dikenli telin dostu yoktur.", "Yavaş at, emin at.", "Kuş sürüsü geçmeden yumurtayı salma.", "Tavuk bilir yumurtanın değerini.", "Kümesin bekçisi köpek, yuvanın bekçisi sensin.", "İnek bakar, koyun meler, sen nişan al.", "Çayırda yumurta aranmaz, yuvada bulunur.", "Her yumurtanın bir yuvası vardır."];
-const MATNAME={bird:'kuşa',wall:'tahtaya',ice:'buzlu tahtaya',nest:'yuvanın kenarına',cushion:'çuvala',tramp:'lastiğe',spike:'dikenli tele',belt:'banda'};
+const MATNAME={fox:'tilkiye',lamb:'kuzuya',bird:'kuşa',wall:'tahtaya',ice:'buzlu tahtaya',nest:'yuvanın kenarına',cushion:'çuvala',tramp:'lastiğe',spike:'dikenli tele',belt:'banda'};
 const COL={wall:'#5b7080',wallTop:'#7d93a1',ice:'#a9e5ff',cushion:'#f27b8e',tramp:'#36d1b5',spike:'#ff5a5a'};
 const $=id=>document.getElementById(id);
 const cv=$('cv'),cx=cv.getContext('2d'),stage=$('stage');
@@ -966,7 +966,7 @@ function finishEgg(){
       for(let q=0;q<(k.dead?40:16);q++){const a=-Math.PI*Math.random(),v=60+Math.random()*220;parts.push({x:e.x,y:e.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:1.2,age:0,col:st.dust,sz:4+Math.random()*7,kind:'conf'});}
       toast(k.dead?`${st.name} devrildi! Yol açıldı, ama bir yumurta gitti.`:`${st.name} sarsıldı: ${k.hits}/${k.brk.hp}. Bir yumurta gitti.`,!k.dead,3400);
     }else
-    toast(e.hitMat==='bird'?'Kuşa çarptı, kırıldı!':e.hitMat==='spike'?'Dikenli tele takıldı, kırıldı!':`Çok sert indi: ${what} ${Math.round(e.lastImp)} hızla çarptı, sınır ${MAT[e.hitMat].th}.`,true,3200);
+    toast(e.hitMat==='fox'?'🦊 Tilki yumurtayı kaptı! O uzaklaşınca dene.':e.hitMat==='lamb'?'🐑 Kuzuya çok sert çarptı, kırıldı!':e.hitMat==='bird'?'Kuşa çarptı, kırıldı!':e.hitMat==='spike'?'Dikenli tele takıldı, kırıldı!':`Çok sert indi: ${what} ${Math.round(e.lastImp)} hızla çarptı, sınır ${(MAT[e.hitMat]||{th:'?'}).th}.`,true,3200);
   }else{
     toast(e.why==='out'?'Yumurta sahneden çıktı.':e.why==='stuck'?'Yuva dışında takıldı kaldı.':'Süre doldu.',true,2400);
   }
@@ -2196,7 +2196,8 @@ function drawSoil(dt){
 let last=performance.now(),acc=0;
 const portraitMQ=matchMedia('(orientation:portrait) and (max-width:700px)');
 try{portraitMQ.addEventListener('change',()=>{if(!portraitMQ.matches&&!mapOpen&&S&&phase==='intro')toast(LV(li).tip,false,4800);});}catch(e){}
-function frame(now){
+function frame(now){try{frameInner(now);}catch(err){try{console.error(err);}catch(_){}requestAnimationFrame(frame);}}
+function frameInner(now){
   if(mapOpen||portraitMQ.matches||(typeof tutOpen!=='undefined'&&tutOpen)){last=now;requestAnimationFrame(frame);return;}
   let dt=Math.min(.05,(now-last)/1000);last=now;
   if(replay){replayFrame(dt);requestAnimationFrame(frame);return;}
