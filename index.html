@@ -172,7 +172,7 @@ body.fs .stage{border-radius:6px;width:100%!important;min-width:0;aspect-ratio:a
 .ib.on{border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,169,77,.45)}
 .ib svg{width:16px;height:16px;flex:none}
 @media (max-width:900px),(orientation:landscape) and (max-height:520px){.ib span{display:none}.chip span{display:none}}
-.splash{position:fixed;inset:0;z-index:1000;background:#05080f;cursor:pointer;touch-action:manipulation;transition:opacity .45s ease}
+.splash{position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;height:100lvh;min-height:100%;overflow:hidden;z-index:1000;background:#05080f;cursor:pointer;touch-action:manipulation;transition:opacity .45s ease}
 .splash.out{opacity:0;pointer-events:none}
 .splash[hidden]{display:none}
 .splash canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -249,7 +249,7 @@ body.fs .stage{border-radius:6px;width:100%!important;min-width:0;aspect-ratio:a
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-6</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-7</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -1687,8 +1687,9 @@ const splashDone=(()=>{
   const el=$('splash'),sc2=$('splashCv'),c=sc2.getContext('2d');let done=false,resolve,start=performance.now(),parts2=[],ended=false;
   const P=new Promise(r=>resolve=r);
   const ease=t=>t<0?0:t>1?1:1-Math.pow(1-t,3),clamp=t=>t<0?0:t>1?1:t;
-  function size(){const d=Math.min(window.devicePixelRatio||1,2);sc2.width=Math.round(innerWidth*d);sc2.height=Math.round(innerHeight*d);c.setTransform(d,0,0,d,0,0);}
-  size();addEventListener('resize',size);
+  let VW=innerWidth,VH=innerHeight;
+  function size(){const d=Math.min(window.devicePixelRatio||1,2),r=el.getBoundingClientRect();VW=Math.max(1,Math.round(r.width||innerWidth));VH=Math.max(1,Math.round(r.height||innerHeight));sc2.width=Math.round(VW*d);sc2.height=Math.round(VH*d);c.setTransform(d,0,0,d,0,0);}
+  size();addEventListener('resize',size);addEventListener('orientationchange',()=>setTimeout(size,200));try{new ResizeObserver(size).observe(el);}catch(e){}
   function finish(){if(done)return;done=true;el.classList.add('out');setTimeout(()=>{el.hidden=true;},460);resolve();try{ac();}catch(e){}}
   el.addEventListener('pointerdown',e=>{e.preventDefault();finish();});
   addEventListener('keydown',e=>{if(!done&&(e.key==='Enter'||e.key===' '||e.key==='Escape'))finish();});
@@ -1706,12 +1707,14 @@ const splashDone=(()=>{
   }
   function frame(now){
     if(done&&el.hidden)return;
-    const t=(now-start)/1000,W=innerWidth,H=innerHeight,m=Math.min(W,H),cx0=W/2,cy0=H/2;
+    {const d=Math.min(window.devicePixelRatio||1,2),r=el.getBoundingClientRect();if(Math.round(r.width)!==VW||Math.round(r.height)!==VH)size();c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,sc2.width,sc2.height);c.setTransform(d,0,0,d,0,0);}
+    const t=(now-start)/1000,W=VW,H=VH,m=Math.min(W,H),cx0=W/2,cy0=H/2;
     // zemin
     const g=c.createRadialGradient(cx0,cy0,0,cx0,cy0,Math.max(W,H)*.75);g.addColorStop(0,'#17213a');g.addColorStop(1,'#05080f');c.fillStyle=g;c.fillRect(0,0,W,H);
-    // ---- MERT GAMES logosu (0–4.6 sn) ----
-    if(t<4.7){
-      const d=Math.min(window.devicePixelRatio||1,2),k=Math.min(H*.86/900,W*.8/820),back=u=>{u=clamp(u);const s1=1.70158;return 1+(s1+1)*Math.pow(u-1,3)+s1*Math.pow(u-1,2);};
+    // ---- MERT GAMES logosu (0–6 sn, 1.3x yavaş) ----
+    const tL=t/1.3;
+    if(tL<4.7){const t=tL;
+      const d=Math.min(window.devicePixelRatio||1,2),k=Math.min(H*.6/900,W*.62/820),back=u=>{u=clamp(u);const s1=1.70158;return 1+(s1+1)*Math.pow(u-1,3)+s1*Math.pow(u-1,2);};
       const breathe=1+.012*Math.sin(Math.max(0,t-1.9)*2.4),ex=ease((t-3.8)/.8);
       // arka kırmızı hale
       const gl=clamp(t/.7)*(1-ex)*(.85+.15*Math.sin(t*3));
@@ -1752,7 +1755,7 @@ const splashDone=(()=>{
     // kıvılcımlar
     const dt=1/60;parts2=parts2.filter(p=>{p.age+=dt;if(p.age>p.life)return false;p.x+=p.vx*dt;p.y+=p.vy*dt;if(!p.soft)p.vy+=m*.6*dt;c.globalAlpha=p.soft?Math.sin(p.age/p.life*Math.PI)*.7:1-p.age/p.life;c.fillStyle=p.soft?'#ffd9cf':'#ffd27a';c.beginPath();c.arc(p.x,p.y,p.r,0,TAU);c.fill();c.globalAlpha=1;return true;});
     // ---- yumurta ve Kırılmasın! (4.6 sn sonrası) ----
-    const tE=t-1.8;
+    const tE=t-3.2;
     if(tE>=2.8){
       const R=m*.2,drop=ease((tE-2.8)/.55),ey=cy0-H*.6*(1-drop)+Math.sin(clamp((tE-3.35)/.3)*Math.PI)*R*.06,crack=clamp((tE-3.45)/.6),open=ease((tE-4.1)/.5);
       if(tE>=4.1){
@@ -1770,7 +1773,7 @@ const splashDone=(()=>{
     }
     requestAnimationFrame(frame);
   }
-  const go=()=>{start=performance.now();if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)start-=8000;requestAnimationFrame(frame);};
+  const go=()=>{start=performance.now();if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)start-=10000;requestAnimationFrame(frame);};
   let went=false;const go1=()=>{if(!went){went=true;go();}};
   try{Promise.all(Object.values(LOGO).map(L=>L.img.decode?L.img.decode().catch(()=>0):0)).then(go1,go1);}catch(e){go1();}setTimeout(go1,900);
   return P;
