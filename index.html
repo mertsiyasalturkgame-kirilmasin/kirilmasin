@@ -183,7 +183,7 @@ body.fs .stage{border-radius:6px;width:100%!important;min-width:0;aspect-ratio:a
 /* ---------- tam ekran oyun: boşluk yok, düğmeler oyunun içinde ---------- */
 html,body{height:100%;overflow:hidden}
 body{padding:0!important}
-.wrap{position:fixed!important;inset:0;height:100vh;height:100dvh;max-width:none!important;width:100%!important;padding:0!important;gap:0!important;display:flex!important;flex-direction:column}
+.wrap{position:fixed!important;inset:0;height:auto;max-width:none!important;width:100%!important;padding:0!important;gap:0!important;display:flex!important;flex-direction:column}
 .stage{flex:1 1 auto!important;width:100%!important;min-width:0!important;height:auto!important;min-height:0;aspect-ratio:auto!important;margin:0!important;border-radius:0!important;box-shadow:none!important}
 .dare{flex:none!important;width:100%!important;min-width:0!important;margin:0!important;border-radius:0!important;box-shadow:none!important;min-height:0!important;padding:16px max(16px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))!important}
 .stage .overlay{z-index:20}
@@ -205,7 +205,17 @@ body{padding:0!important}
 .inv{top:calc(max(8px,env(safe-area-inset-top)) + 52px)!important;right:max(10px,env(safe-area-inset-right))!important}
 .toast{top:calc(max(8px,env(safe-area-inset-top)) + 58px)!important}
 @media (max-width:900px),(max-height:520px){.hud .long{display:none}.hud .short{display:inline}.hud .btn,.hud .who,.hud .tot{padding:6px 10px!important;font-size:.8rem!important}.hud .lv b{font-size:.9rem}.hud{gap:6px!important}}
-@media (max-width:600px){.hud .lv .k{display:none!important}.hud .tot{display:none!important}}
+@media (max-width:600px){
+  .hud{flex-wrap:wrap!important;row-gap:6px!important;padding-bottom:12px}
+  .hud .lv{max-width:none;flex:1 1 0;margin-right:0}
+  .hud .lv .k{display:none!important}
+  .hud .tot{display:inline-block!important;padding:6px 9px!important}
+  .hud .btns{width:100%;justify-content:space-between;gap:4px!important}
+  .hud .btns .btn,.hud .btns .who{flex:1 1 0;min-width:0;padding:7px 4px!important;text-align:center;overflow:hidden;text-overflow:ellipsis}
+  .hud .who{max-width:none}
+  .fxbar,.inv{top:calc(max(8px,env(safe-area-inset-top)) + 92px)!important}
+  .toast{top:calc(max(8px,env(safe-area-inset-top)) + 132px)!important;white-space:normal!important;text-align:center;width:max-content;max-width:calc(100% - 24px)!important}
+}
 /* ---------- sosyal ve çiftlik pencereleri ---------- */
 .pop{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:12px;background:rgba(20,12,4,.55);backdrop-filter:blur(3px)}
 .pop[hidden]{display:none}
@@ -290,7 +300,7 @@ button.fitem{cursor:pointer}
 .chick-new{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 10px;font-weight:800;color:var(--accent)}
 .chick-new svg{width:40px;height:40px}
 /* ---------- çiftlik yolu bölüm haritası ---------- */
-.map{position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;height:100lvh;z-index:60;background:#79b544;overflow:hidden;font-family:var(--body);color:#fff}
+.map{position:fixed;top:0;left:0;right:0;bottom:0;z-index:60;background:#79b544;overflow:hidden;font-family:var(--body);color:#fff}
 .map[hidden]{display:none}
 .map #mapCv{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
 .mapScroll{position:absolute;inset:0;overflow-y:auto;touch-action:pan-y;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none}
@@ -357,7 +367,7 @@ button.fitem{cursor:pointer}
   <div class="mapSide"><button type="button" id="mapDaily" aria-label="Günün bölümü">📅<span>Günlük</span></button><button type="button" id="mapTour" aria-label="Haftalık turnuva">🏆<span>Turnuva</span></button><button type="button" id="mapFarm" aria-label="Çiftliğim">🐣<span>Çiftliğim</span></button><button type="button" id="mapFr" aria-label="Arkadaşlar">👥<span>Arkadaş</span></button></div>
   <div class="mapZoom"><button type="button" id="mapZi" aria-label="Yakınlaştır">+</button><button type="button" id="mapZo" aria-label="Uzaklaştır">−</button></div>
   <button class="mapGo" id="mapGo" type="button">Oyna</button>
-  <span class="mapVer">Sürüm 2026.11.24-12</span>
+  <span class="mapVer">Sürüm 2026.11.24-14</span>
 </div>
 <div class="pop" id="pop" hidden><div class="pcard" id="pcard" role="dialog" aria-modal="true" aria-label="Pencere"></div></div>
 <div class="farm" id="farm" hidden>
@@ -383,8 +393,8 @@ button.fitem{cursor:pointer}
   <div class="turn" id="turn" role="dialog" aria-modal="true" aria-labelledby="turnT">
     <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="22" y="8" width="20" height="36" rx="4" fill="none" stroke="#f4efe4" stroke-width="3"/><g class="spin"><rect x="10" y="30" width="36" height="20" rx="4" fill="none" stroke="#ffa94d" stroke-width="3"/></g></svg>
     <p id="turnT">Telefonu yan çevir</p>
-    <span>Oyun yatay ekranda tam sığar.</span>
-    <button class="btn" id="bPortrait">Dikey devam et</button>
+    <span>Bölüm yatay ekranda oynanır. Telefonu yan çevirince bölüm açılır.</span>
+    <button class="btn" id="bPortrait">← Bölümlere dön</button>
   </div>
   <div class="stage" id="stage">
     <canvas id="cv" aria-label="Oyun sahnesi: bas, geri çek ve bırak"></canvas>
@@ -420,7 +430,7 @@ button.fitem{cursor:pointer}
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-12</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-14</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -723,7 +733,7 @@ function updSnd(){const b=$('bSound');b.querySelector('.long').textContent=sound
  const can=document.fullscreenEnabled||document.webkitFullscreenEnabled;
  if(can)fb.hidden=false;
  fb.addEventListener('click',async()=>{try{if(document.fullscreenElement||document.webkitFullscreenElement){(document.exitFullscreen||document.webkitExitFullscreen).call(document);}else{await (root.requestFullscreen||root.webkitRequestFullscreen).call(root);try{await screen.orientation.lock('landscape');}catch(e){}}}catch(e){toast('Bu görünümde tam ekran açılamıyor. Tarayıcıda yeni sekmede açmayı dene.',true,3000);}});
- $('bPortrait').addEventListener('click',()=>document.body.classList.add('portrait-ok'));}
+ $('bPortrait').addEventListener('click',()=>MAP.open());}
 $('bSound').addEventListener('click',()=>{sound=!sound;try{localStorage.setItem(KEY+'.snd',sound?'1':'0');}catch(e){}updSnd();});
 updSnd();
 
@@ -1972,8 +1982,10 @@ function drawSoil(dt){
 
 /* ---------- döngü ---------- */
 let last=performance.now(),acc=0;
+const portraitMQ=matchMedia('(orientation:portrait) and (max-width:700px)');
+try{portraitMQ.addEventListener('change',()=>{if(!portraitMQ.matches&&!mapOpen&&S&&phase==='intro')toast(LEVELS[li].tip,false,4800);});}catch(e){}
 function frame(now){
-  if(mapOpen){last=now;requestAnimationFrame(frame);return;}
+  if(mapOpen||portraitMQ.matches){last=now;requestAnimationFrame(frame);return;}
   let dt=Math.min(.05,(now-last)/1000);last=now;acc+=dt;
   while(acc>=SUB){sub(S,SUB);acc-=SUB;
     if(autoJob&&--autoJob.stepsLeft<=0)fireAuto();
