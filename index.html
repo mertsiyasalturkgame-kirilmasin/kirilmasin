@@ -243,7 +243,7 @@ body.fs .stage{border-radius:6px;width:100%!important;min-width:0;aspect-ratio:a
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row"><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-2</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -1779,7 +1779,7 @@ requestAnimationFrame(frame);
 })();
 </script>
 <script>
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
 </script>
 </body>
 </html>
