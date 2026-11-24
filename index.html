@@ -317,6 +317,29 @@ button.fitem{cursor:pointer}
 .ttl{display:inline-block;font:800 .72em/1.2 var(--body);padding:1px 7px;border-radius:999px;margin-left:4px;white-space:nowrap;vertical-align:middle;color:#5a2e06;background:linear-gradient(#ffe08a,#f0b429);border:1px solid #9c5a08}
 .ttl.t1{background:linear-gradient(#f2f4f7,#c3c9d2);border-color:#7d8590;color:#333}
 .ttl.t2{background:linear-gradient(#f3cfa4,#cd8a4b);border-color:#8a4f1c;color:#3d230a}
+.finale{position:fixed;inset:0;z-index:98;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,#5b3a14 0,#2a1a08 70%);color:#fff8ea;font-family:var(--body);overflow:auto;padding:16px}
+.finale[hidden]{display:none}
+.finale canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+.fnIn{position:relative;text-align:center;max-width:620px;width:100%}
+.finale .fk{margin:0;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#ffb36b;font-size:.8rem}
+.finale h2{margin:6px 0 4px;font:800 clamp(2rem,7vw,3.4rem)/1.05 var(--display);color:#ffd23f;text-shadow:0 4px 0 #7a4a05,0 10px 30px rgba(0,0,0,.5)}
+.finale .fn{margin:0 0 10px;font-weight:800;font-size:1.1rem}
+.fnChicks{position:relative;height:70px;margin:6px auto 8px;max-width:520px}
+.fnChicks i{position:absolute;left:50%;bottom:0;width:46px;height:46px;transform:translateX(calc(-50% + var(--x)*11));opacity:0;animation:fnc .7s cubic-bezier(.3,1.6,.5,1) var(--d) forwards,fnh 1.1s ease-in-out calc(var(--d) + .7s) infinite}
+.fnChicks i svg{width:100%;height:100%}
+@keyframes fnc{from{opacity:0;transform:translateX(calc(-50% + var(--x)*11)) translateY(40px)}to{opacity:1;transform:translateX(calc(-50% + var(--x)*11))}}
+@keyframes fnh{50%{margin-bottom:8px}}
+.fnStats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:6px 0}
+.fnStats span{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:8px 12px;font-weight:700}
+.fnStats b{color:#ffd23f;font-size:1.2rem}
+.fnGift{font-size:.92rem;color:#f3dcb4;margin:8px 0}
+.credits{height:92px;overflow:hidden;margin:6px auto 10px;max-width:420px;-webkit-mask:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask:linear-gradient(transparent,#000 20%,#000 80%,transparent)}
+.credits .roll p{margin:0 0 14px;color:#f3dcb4;font-size:.9rem}
+.finale.roll .credits .roll{animation:cred 14s linear infinite}
+@keyframes cred{from{transform:translateY(92px)}to{transform:translateY(-100%)}}
+.ttl.leg{background:linear-gradient(#ffe7a8,#f08a24);border-color:#8a4c05;color:#4a2508}
+.makers{display:flex;flex-direction:column;gap:4px;margin:0 0 10px;padding:10px 12px;border-radius:12px;background:rgba(255,210,63,.08);border:1px solid rgba(255,210,63,.3);font-size:.88rem}
+.makers b{color:#ffd23f}.makers small{color:var(--muted)}
 .rpbtn{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:7;font:800 .95rem/1 var(--body);color:#fff8ea;background:linear-gradient(#a8743f,#7d4f22);border:2px solid #4f2e0f;border-radius:999px;padding:10px 18px;box-shadow:0 3px 0 #3d230a,0 8px 18px rgba(0,0,0,.35);cursor:pointer}
 .pcard.wide{width:min(920px,100%)}
 .sttab{max-height:58vh;overflow:auto;border-radius:12px;background:#2a1a0c}
@@ -427,7 +450,20 @@ html,body{background:#2f1f12}
   <div class="mapSide"><button type="button" id="mapDaily" aria-label="Günün bölümü">📅<span>Günlük</span></button><button type="button" id="mapTour" aria-label="Haftalık turnuva">🏆<span>Turnuva</span></button><button type="button" id="mapFarm" aria-label="Çiftliğim">🐣<span>Çiftliğim</span></button><button type="button" id="mapFr" aria-label="Arkadaşlar">👥<span>Arkadaş</span></button><button type="button" id="mapMod" aria-label="Diğer modlar">🎮<span>Modlar</span></button></div>
   <div class="mapZoom"><button type="button" id="mapZi" aria-label="Yakınlaştır">+</button><button type="button" id="mapZo" aria-label="Uzaklaştır">−</button></div>
   <button class="mapGo" id="mapGo" type="button">Oyna</button>
-  <span class="mapVer">Sürüm 2026.11.24-31</span>
+  <span class="mapVer">Sürüm 2026.11.24-32</span>
+</div>
+<div class="finale" id="finale" hidden role="dialog" aria-label="Oyunu bitirdin">
+  <canvas id="fnCv" aria-hidden="true"></canvas>
+  <div class="fnIn">
+    <p class="fk">🦊 Tilki kralı yenildi</p>
+    <h2>Çiftliği kurtardın!</h2>
+    <p class="fn" id="fnName"></p>
+    <div class="fnChicks" id="fnChicks" aria-hidden="true"></div>
+    <div class="fnStats" id="fnStats"></div>
+    <p class="fnGift">Ödüllerin: <b>🐓 Çiftlik Efsanesi</b> rozeti artık adının yanında, <b>Taç yumurta</b> kostümü Çiftliğim'de seni bekliyor.</p>
+    <div class="credits"><div class="roll"><p><b>MERT GAMES</b> sunar</p><p>KIRILMASIN!</p><p>Tasarım ve geliştirme<br><b>Mert</b></p><p>Çiftlik sakinleri<br>tavuklar, civcivler, inekler, koyunlar<br>ve bir tilki kralı</p><p>Oynadığın için teşekkürler 🥚</p></div></div>
+    <div class="prow"><button class="wb gold" id="fnMore" type="button">⭐ 1000 yıldızın peşine düş</button><button class="wb red" id="fnEnd" type="button">♾️ Sonsuz moda geç</button></div>
+  </div>
 </div>
 <div class="tutor" id="tutor" hidden role="dialog" aria-live="polite" aria-labelledby="tuH">
   <svg class="hen" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="30" cy="42" rx="20" ry="16" fill="#b5612f"/><path d="M12 40q-8-10 2-16 2 8 8 10z" fill="#7a3a18"/><circle cx="42" cy="24" r="11" fill="#c46d38"/><path d="M36 13q2-6 5-1 2-6 5 0 3-5 5 2-8 3-15-1z" fill="#d42a1e"/><path d="M52 24l8 3-8 3z" fill="#f0a020"/><path d="M46 31q3 6-1 8-3-3 1-8z" fill="#d42a1e"/><circle cx="45" cy="22" r="2.2" fill="#1b1b1b"/><circle cx="45.7" cy="21.3" r=".7" fill="#fff"/><path d="M24 57v5M34 57v5" stroke="#e0a020" stroke-width="2.4" stroke-linecap="round"/></svg>
@@ -499,7 +535,7 @@ html,body{background:#2f1f12}
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-31</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-32</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -518,6 +554,7 @@ html,body{background:#2f1f12}
         <h2 id="bTitle">Skor tablosu</h2>
         <div class="tabs2" id="bTabs"><button type="button" data-t="all" aria-pressed="true">Genel</button><button type="button" data-t="day" aria-pressed="false">Bugün</button><button type="button" data-t="week" aria-pressed="false">Bu hafta</button><button type="button" data-t="fr" aria-pressed="false">Arkadaşlar</button></div>
         <p class="note" id="bStatus">Yükleniyor…</p>
+        <div class="makers" id="makers" hidden></div>
         <table class="board" id="board" hidden><thead><tr id="bHead"><th>#</th><th>Ad</th><th>Yıldız</th><th>Bölüm</th><th></th></tr></thead><tbody id="bRows"></tbody></table>
         <div class="mine"><span>Sen: <b id="myName">—</b> · <span id="myStars">0</span> / 1000 yıldız</span><span class="sp"></span><button class="btn" id="bCopy">Skor kodumu kopyala</button></div>
         <p class="note" id="myNote"></p>
@@ -825,11 +862,12 @@ const TITLES=[['🥇','Altın Yumurta'],['🥈','Gümüş Gaga'],['🥉','Bronz 
 function titleKey(ms){const d=new Date((ms||Date.now())+3*36e5);const back=(d.getUTCDay()-3+7)%7;d.setUTCDate(d.getUTCDate()-back);return d.toISOString().slice(0,10);}
 const prevTitleKey=()=>titleKey(Date.now()-7*864e5);
 function titleEnds(){const k=titleKey(),d=new Date(k+'T00:00:00Z');return d.getTime()+7*864e5-3*36e5-Date.now();}
-let TT={};function titleCalc(){const cand=[];(typeof direct!=='undefined'?direct:[]).forEach(d=>{if(!(d.stars>0))return;cand.push({d,g:d.stars});});
+let TT={};function titleCalc(){const cand=[];(typeof direct!=='undefined'?direct:[]).forEach(d=>{if(d.gm||!(d.stars>0))return;cand.push({d,g:d.stars});});
   cand.sort((a,b)=>b.g-a.g||a.d.at-b.d.at);TT={};cand.slice(0,3).forEach((c,k)=>{TT[String(c.d.name).toLowerCase()]={r:k,g:c.g,id:c.d.id,name:c.d.name};});return cand.slice(0,3);}
 const titleOf=n=>TT[String(n||'').toLowerCase()];
 const tH=n=>{const t=titleOf(n);return t?` <span class="ttl t${t.r}" title="Haftanın ünvanı">${TITLES[t.r][0]} ${TITLES[t.r][1]}</span>`:'';};
-const nmH=(n,gm)=>(gm?`<span class="gmn">[GM] ${esc(n)}</span>`:esc(n))+tH(n);
+const legend=n=>(typeof direct!=='undefined'?direct:[]).some(d=>d.name===n&&!d.gm&&d.done>=LEVELS.length)||(typeof player!=='undefined'&&n===player&&!save.gm&&save.fin);
+const nmH=(n,gm)=>(gm?`<span class="gmn">[GM] ${esc(n)}</span>`:esc(n))+tH(n)+(legend(n)?' <span class="ttl leg" title="200 bölümün hepsini bitirdi">🐓 Çiftlik Efsanesi</span>':'');
 let save={stars:{}};
 try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.stars)save=s;}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}}
@@ -840,7 +878,7 @@ function missionOK(g,e){if(!g||!e)return false;const air=(e.air||0)+(e.age||0),b
   switch(g.k){case'sekmesiz':return bn===0;case'sekme1':return bn<=1;case'sekmeli':return bn>=1;case'ruzgar':return!!e.wz;case'tramplen':return!!e.tramped;case'portal':return!!e.ported;case'buz':return!!e.iced;case'yakala':return(e.hops||0)>0;case'hizli':return air<=g.t;case'uzun':return air>=g.t;case'bank':return bn>=2;case'bank3':return bn>=3;case'zayif':return Math.round((e.pw||0)*1000)/10<=g.t;case'guclu':return Math.round((e.pw||0)*1000)/10>=g.t;case'yuksek':return(e.top??900)<=g.t;case'alcak':return(e.top??900)>=g.t;}return false;}
 const bonusOf=i=>((save.gv&&save.gv[i])?1:0)+((save.us&&save.us[i])?1:0);
 const MAXST=()=>LEVELS.length*5;
-const isOpen=i=>i<LEVELS.length&&(i===0||starsOf(i-1)>0);
+const isOpen=i=>i<LEVELS.length&&(i===0||starsOf(i-1)>0||!!(typeof save!=='undefined'&&save.gm));
 const XLV=[];const LV=i=>i<LEVELS.length?LEVELS[i]:XLV[i-LEVELS.length];
 
 /* ---------- ses ---------- */
@@ -968,7 +1006,8 @@ function finishEgg(){
     if(mode)prev=modeRecord(st);
     pushScore();
     renderTot();
-    endT=setTimeout(()=>showResult(true,st,prev),3000);
+    if(li===LEVELS.length-1&&!mode&&!save.fin&&LEVELS.every((_,i)=>starsOf(i)>0)){save.fin=1;persist();pushScore();endT=setTimeout(()=>{showResult(true,st,prev);showFinale();},3000);}
+    else endT=setTimeout(()=>showResult(true,st,prev),3000);
     return;
   }
   eggsLeft--;renderEggs();if(eggsLeft>0)attSet();else attClear();
@@ -1002,7 +1041,7 @@ function showResult(win,st,prev){
     G.innerHTML=(d.gv&&d.us?'<li class="hint">İkisi aynı atışta da yapılabilir — ama kolay değil.</li>':'')+(d.gv?`<li class="${lb.g||gv?'ok':''}">🏅 <span>Görev: ${goalTxt(d.gv)}</span><b>${lb.gNew?'+1 ★ yeni!':lb.g||gv?'✓':'—'}</b></li>`:'')+(d.us?`<li class="${lb.u||us?'ok':''}">✨ <span>Ustalık: ${goalTxt(d.us)}</span><b>${lb.uNew?'+1 ★ yeni!':lb.u||us?'✓':'—'}</b></li>`:'');lastBonus=null;}
   let txt;
   if(!win)txt='Üç yumurta da gitti. Biraz farklı bir açı dene.';
-  else if(last&&LEVELS.every((_,i)=>starsOf(i)>0)){let tot=0;LEVELS.forEach((_,i)=>tot+=starsOf(i));txt=`Bütün bölümleri bitirdin. Toplam ${tot} / ${LEVELS.length*3} yıldız.`;}
+  else if(last&&!mode&&LEVELS.every((_,i)=>starsOf(i)>0)){const t3=LEVELS.filter((_,i)=>starsOf(i)>=3).length;txt=`Bütün bölümleri bitirdin! Toplam ${total()} / ${MAXST()} yıldız, ${t3} bölüm 3 yıldızlı.`;}
   else txt=st===3?'İlk yumurtada, tek seferde.':`${lastUsed+1}. yumurtada başardın. 3 yıldız için tek atışta dene.`;
   if(win&&prev&&st<=prev)txt+=` Rekorun: ${prev} yıldız.`;
   if(win&&li===9&&LEVELS[0].chapter===0)txt+=' Eğitim bitti, asıl oyun şimdi başlıyor!';
@@ -2437,11 +2476,12 @@ async function pushScore(){
 }
 function merged(){
   const by={};
-  direct.forEach(r=>{const k=r.name.toLowerCase();if(!by[k]||r.stars>by[k].stars)by[k]={...r,src:'direct'};});
+  direct.forEach(r=>{if(r.gm)return;const k=r.name.toLowerCase();if(!by[k]||r.stars>by[k].stars)by[k]={...r,src:'direct'};});
   manual.forEach(r=>{const k=r.name.toLowerCase();if(!by[k]||r.stars>by[k].stars)by[k]={...r,src:'kod'};});
   return Object.values(by).sort((a,b)=>b.stars-a.stars||b.done-a.done||a.at-b.at);
 }
-function renderBoard(){
+function renderMakers(){const el=$('makers');if(!el)return;const g=(typeof direct!=='undefined'?direct:[]).filter(d=>d.gm);el.hidden=!g.length;el.innerHTML=g.length?`<b>🛠️ Yapımcılar</b>${g.map(d=>`<span class="mk"><span class="gmn">[GM] ${esc(d.name)}</span> · ${d.stars} ★ · ${curLevelOf(d)+1}/${LEVELS.length}</span>`).join('')}<small>Yapımcılar sıralamaya ve ünvanlara katılmaz.</small>`:'';}
+function renderBoard(){renderMakers();
   $('myName').textContent=player||'—';$('myStars').textContent=total();
   const st=$('bStatus'),tb=$('bRows');
   if(dbState==='off'){st.textContent=window.FIREBASE_CONFIG?('Skor tablosuna bağlanılamadı. İnternet bağlantını kontrol et.'+(fbErr?' (Hata: '+fbErr+')':(window.firebase?'':' (Hata: Firebase kütüphanesi yüklenemedi)'))):'Skor tablosu bu görünümde açılamıyor. Claude hesabına giriş yapmış olarak açınca görünür. Skor kodunu yine de kopyalayıp Mert’e gönderebilirsin.';$('board').hidden=true;}
@@ -2452,10 +2492,10 @@ function renderBoard(){
   $('bHead').innerHTML=HD.map(h=>`<th>${h}</th>`).join('');
   if(boardTab!=='all'){
     let rows=[];const t=dayKey(),wk=weekKey();
-    if(boardTab==='day')rows=direct.filter(d=>d.day===t&&d.ds>0).sort((a,b)=>b.ds-a.ds||a.dat-b.dat).map(d=>({id:d.id,name:d.name,gm:d.gm,v:'★'.repeat(d.ds),x:''}));
+    if(boardTab==='day')rows=direct.filter(d=>d.day===t&&d.ds>0&&!d.gm).sort((a,b)=>b.ds-a.ds||a.dat-b.dat).map(d=>({id:d.id,name:d.name,gm:d.gm,v:'★'.repeat(d.ds),x:''}));
     else if(boardTab==='unvan'){const ck=titleKey();rows=direct.filter(d=>!d.gm).map(d=>({d,g:d.tw===ck?d.stars-(d.tb||0):0})).filter(x=>x.g>0).sort((a,b)=>b.g-a.g||a.d.at-b.d.at).map(x=>({id:x.d.id,name:x.d.name,gm:x.d.gm,v:'+'+x.g+' ★',x:''}));}
     else if(boardTab==='week')rows=weekRows(wk).map(d=>({id:d.id,name:d.name,gm:d.gm,v:d.ws2+' / 15 ★',x:''}));
-    else{const set=new Set(save.friends);rows=direct.filter(d=>set.has(d.code)||d.id===myId).sort((a,b)=>b.stars-a.stars).map(d=>({id:d.id,name:d.name,gm:d.gm,v:d.stars+' ★',x:`${curLevelOf(d)+1}/${LEVELS.length}`}));}
+    else{const set=new Set(save.friends);rows=direct.filter(d=>(set.has(d.code)||d.id===myId)&&!d.gm).sort((a,b)=>b.stars-a.stars).map(d=>({id:d.id,name:d.name,gm:d.gm,v:d.stars+' ★',x:`${curLevelOf(d)+1}/${LEVELS.length}`}));}
     st.textContent=boardTab==='unvan'?(()=>{const w=titleCalc();return `Bu hafta en çok yıldız kazanan ilk 3 anında ünvan alır; sıralama değişirse ünvan da el değiştirir. Sayaç çarşamba 00:00'da sıfırlanır (${dur(titleEnds())} kaldı).`;})():boardTab==='day'?`Bugünün bölümü: ${dailyIdx()+1}. bölüm · ${rows.length} oyuncu`:boardTab==='week'?(()=>{const c=champion();return `Bitişe ${dur(weekEnds())}`+(c?` · Geçen haftanın şampiyonu 👑 ${c.name}`:'');})():(save.friends.length?`${save.friends.length} arkadaş · senin numaran #${myCode()}`:`Henüz arkadaşın yok. Haritadaki 👥 düğmesinden #numarayla ekle. Senin numaran #${myCode()}`);
     $('board').hidden=!rows.length;tb.innerHTML='';
     rows.forEach((r,i)=>{const tr=document.createElement('tr');if(i===0)tr.className='lead';if(r.id===myId)tr.classList.add('me');
@@ -2466,7 +2506,7 @@ function renderBoard(){
     $('board').hidden=!list.length;tb.innerHTML='';
     list.forEach((r,i)=>{const tr=document.createElement('tr');if(i===0&&r.stars>0)tr.className='lead';if(player&&r.name.toLowerCase()===player.toLowerCase())tr.classList.add('me');
       const td=(c,t)=>{const x=document.createElement('td');if(c)x.className=c;x.textContent=t;tr.appendChild(x);return x;};
-      td('n',i+1);td('nm',r.name);if(r.gm||titleOf(r.name)){const q=tr.lastChild;q.innerHTML=nmH(r.name,r.gm);}td('st',r.stars+' ★');td('',`${r.done}/${LEVELS.length}`);
+      td('n',i+1);td('nm',r.name);if(r.gm||titleOf(r.name)||legend(r.name)){const q=tr.lastChild;q.innerHTML=nmH(r.name,r.gm);}td('st',r.stars+' ★');td('',`${r.done}/${LEVELS.length}`+(r.done>=LEVELS.length?' 🏁':''));
       const last=td('','');
       if(owner){const b=document.createElement('button');b.className='del';b.type='button';b.textContent='Sil';b.setAttribute('aria-label',r.name+' satırını sil');
         b.addEventListener('click',async()=>{b.disabled=true;try{const tasks=[];direct.filter(x=>x.name.toLowerCase()===r.name.toLowerCase()).forEach(x=>tasks.push(DB.collection(SCOL).doc(x.id).delete()));manual.filter(x=>x.name.toLowerCase()===r.name.toLowerCase()).forEach(x=>tasks.push(DB.collection('manual').doc(x.id).delete()));await Promise.all(tasks);}catch(e){b.disabled=false;}});
@@ -2576,7 +2616,7 @@ let enUsed=[];
 function endlessPick(n){const want=Math.min(.95,.25+n*.035),pool=SON.filter(i=>!enUsed.includes(i));const arr=(pool.length?pool:SON).slice().sort((p,q)=>Math.abs(XLV[p-LEVELS.length].d-want)-Math.abs(XLV[q-LEVELS.length].d-want)).slice(0,4);return arr[Math.floor(Math.random()*arr.length)];}
 function endlessStart(){enUsed=[];const i=endlessPick(0);enUsed.push(i);playMode({type:'endless',n:0},i);}
 function endlessNext(){const i=endlessPick(mode.n);enUsed.push(i);startLevel(i);}
-function showEndless(){const rows=direct.filter(d=>d.en>0).sort((a,b)=>b.en-a.en).slice(0,8);
+function showEndless(){const rows=direct.filter(d=>d.en>0&&!d.gm).sort((a,b)=>b.en-a.en).slice(0,8);
   openPop(`<p class="k">♾️ Sonsuz mod</p><h2>Ne kadar dayanırsın?</h2><p>Bölümler art arda gelir ve giderek zorlaşır. Bir bölümde üç yumurtan da kırılırsa seri biter. Kaç bölüm üst üste geçebilirsin?</p>
    <p style="font-weight:800">En iyi serin: ${save.en||0} bölüm</p><div class="prow"><button class="wb red" id="enGo" type="button">Başla</button></div>
    <ul class="plist">${rows.length?rows.map((r,k)=>`<li class="${r.id===myId?'me':''}"><span class="av" style="background:${avColor(r.name)}">${k+1}</span><span class="nm">${nmH(r.name,r.gm)}</span><span class="v">${r.en} bölüm</span></li>`).join(''):'<li><span class="nm" style="font-weight:600">Henüz kimse sonsuz modda seri yapmadı.</span></li>'}</ul>`);
@@ -2637,6 +2677,19 @@ let incomingB=null;try{const Q=new URLSearchParams(location.search);const b=Q.ge
   (c.w||[]).slice(0,40).forEach(q=>{const s={pts:[[q[0],q[1]],[q[2],q[3]]],t:24};if(['ice','tramp','spike'].includes(q[4]))s.mat=q[4];d.solids.push(s);});d.name=(Q.get('n')||'Arkadaşın').slice(0,20)+' bölümü';incomingB={def:d,by:(Q.get('n')||'').slice(0,20)};history.replaceState(null,'',location.pathname);}}catch(e){}
 function showIncomingB(){const x=incomingB;if(!x)return;incomingB=null;openPop(`<p class="k">🛠️ Özel bölüm</p><h2>${esc(x.by||'Bir arkadaşın')} sana bölüm yaptı!</h2><p>Kendi elleriyle kurduğu bölümü geçebilir misin?</p><div class="prow"><button class="wb red" id="ibGo" type="button">Oyna</button></div>`);
   $('ibGo').addEventListener('click',()=>editPlay(x.def,{type:'shared',by:x.by}));}
+
+
+/* ---------- 200. bölüm: bitiş kutlaması ---------- */
+function showFinale(){const el=$('finale');if(!el)return;const m=chickCounts(),ids=[];CHICKS.forEach(k=>{for(let q=0;q<Math.min(m[k.id],6);q++)ids.push(k.id);});if(!ids.length)ids.push('sari','sari','krem');
+  const t3=LEVELS.filter((_,i)=>starsOf(i)>=3).length;
+  $('fnStats').innerHTML=`<span><b>${total()}</b> / ${MAXST()} yıldız</span><span><b>${t3}</b> bölüm 3 yıldız</span><span><b>${chickTotal()}</b> civciv</span>`;
+  $('fnChicks').innerHTML=ids.slice(0,24).map((id,k)=>`<i style="--d:${(k*.12).toFixed(2)}s;--x:${((k%12)-5.5)*8}%">${chickSVG(id)}</i>`).join('');
+  $('fnName').innerHTML=nmH(player||'Sen',save.gm);
+  el.hidden=false;el.classList.remove('roll');void el.offsetWidth;el.classList.add('roll');fanfare();setTimeout(fanfare,900);try{vib([40,60,40,60,120]);}catch(e){}
+  const c=$('fnCv'),x=c.getContext('2d');let t0=performance.now(),P=[];const W2=()=>c.width=c.clientWidth*(Math.min(2,devicePixelRatio||1)),H2=()=>c.height=c.clientHeight*(Math.min(2,devicePixelRatio||1));W2();H2();
+  for(let k=0;k<160;k++)P.push({x:Math.random(),y:-Math.random()*1.2,v:.12+Math.random()*.25,s:4+Math.random()*7,r:Math.random()*6,c:['#ffd23f','#ff7a52','#7ad18a','#7aa8ff','#ff8fb1','#fff'][k%6]});
+  (function loop(now){if(el.hidden)return;const dt=Math.min(.05,(now-t0)/1000);t0=now;x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v*dt;p.r+=dt*4;if(p.y>1.1){p.y=-.1;p.x=Math.random();}x.save();x.translate(p.x*c.width,p.y*c.height);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s,-p.s/2,p.s*2,p.s);x.restore();});requestAnimationFrame(loop);})(t0);}
+function finaleClose(){$('finale').hidden=true;}
 
 /* ---------- bir kereye mahsus anlatıcı ---------- */
 const TUT={
@@ -2744,9 +2797,10 @@ const SKINS=[
  {id:'altin',n:'Altın',need:350,b:['#fff6c8','#ffd23f','#c99212'],shine:1},
  {id:'bayram',n:'Bayram',need:450,b:['#ffffff','#f4f4f4','#cfcfcf'],stripes:['#ff7a7a','#ffd84a','#7ad1ff','#9be37a']},
  {id:'kristal',n:'Kristal',need:600,b:['#f6fdff','#cfeefd','#8fc9e8'],shine:1,crystal:1},
+ {id:'tac',n:'Taç yumurta',fin:1,b:['#fff7cf','#ffd23f','#b8860b'],spots:'#d9342b',shine:1,crystal:1},
  {id:'kardan',n:'Kardan yumurta',ev:1,b:['#ffffff','#eef6ff','#bcd6ee'],spots:'#d8ecff',crystal:1},
  {id:'ates',n:'Ateş',streak:7,b:['#ffe6b0','#ff9a3c','#c9431c'],shine:1}];
-const skinOpen=s=>s.ev?!!save.evDone:s.wel?(save.wel||0)>=s.wel:s.streak?(save.streak.best||0)>=s.streak:total()>=s.need;
+const skinOpen=s=>s.fin?!!save.fin:s.ev?!!save.evDone:s.wel?(save.wel||0)>=s.wel:s.streak?(save.streak.best||0)>=s.streak:total()>=s.need;
 let curSkin=SKINS.find(s=>s.id===save.skin)||SKINS[0];if(!skinOpen(curSkin))curSkin=SKINS[0];
 function skinPaint(c,rx,ry,s){ // eggShape yolunu kullanır (kırpılmış)
   const g=c.createRadialGradient(-rx*.35,-ry*.35,rx*.1,0,0,ry*1.1);g.addColorStop(0,s.b[0]);g.addColorStop(.7,s.b[1]);g.addColorStop(1,s.b[2]);c.fillStyle=g;c.fill();
@@ -2842,17 +2896,17 @@ function showFriends(){
     save.friends.push(c);persist();pushScore();$('frIn').value='';N.textContent=d?`${d.name} eklendi! Haritanda görünecek.`:'Eklendi; bağlantı gelince görünecek.';render();MAP.refresh();});
 }
 function friendMarks(){return save.friends.map(c=>docByCode(c)).filter(Boolean).map(d=>({name:d.name,gm:d.gm,lv:curLevelOf(d)}));}
-function socialSync(){try{titleCalc();const me=player&&titleOf(player);if(me){const best=save.ttlBest==null?9:save.ttlBest;if(me.r<best){save.ttlBest=me.r;persist();setTimeout(()=>toast(`${TITLES[me.r][0]} Sıralamada ${me.r+1}. oldun: "${TITLES[me.r][1]}" ünvanı artık adının yanında!`,false,4200),600);}}else if(!me&&save.ttlBest!=null){save.ttlBest=null;persist();}}catch(e){}if(!socialSync.cl){socialSync.cl=1;clubsLoad();}if(!player&&myId){const me=direct.find(d=>d.id===myId);if(me&&me.name&&me.src!=='kod'){player=me.name;if(me.gm){save.gm=1;persist();}try{localStorage.setItem(KEY+'.name',player);}catch(e){}$('bWho').textContent=player;$('ovName').hidden=true;if(typeof afterIntro==='function')setTimeout(afterIntro,200);}}const me=myId&&direct.find(d=>d.id===myId);if(me&&me.fr&&!save.friends.length){save.friends=me.fr.split(',').map(Number).filter(n=>n>=10000&&n<=99999);persist();}MAP.refresh();}
+function socialSync(){try{titleCalc();const me=player&&titleOf(player);if(me&&!save.gm){const best=save.ttlBest==null?9:save.ttlBest;if(me.r<best){save.ttlBest=me.r;persist();setTimeout(()=>toast(`${TITLES[me.r][0]} Sıralamada ${me.r+1}. oldun: "${TITLES[me.r][1]}" ünvanı artık adının yanında!`,false,4200),600);}}else if(!me&&save.ttlBest!=null){save.ttlBest=null;persist();}}catch(e){}if(!socialSync.cl){socialSync.cl=1;clubsLoad();}if(!player&&myId){const me=direct.find(d=>d.id===myId);if(me&&me.name&&me.src!=='kod'){player=me.name;if(me.gm){save.gm=1;persist();}try{localStorage.setItem(KEY+'.name',player);}catch(e){}$('bWho').textContent=player;$('ovName').hidden=true;if(typeof afterIntro==='function')setTimeout(afterIntro,200);}}const me=myId&&direct.find(d=>d.id===myId);if(me&&me.fr&&!save.friends.length){save.friends=me.fr.split(',').map(Number).filter(n=>n>=10000&&n<=99999);persist();}MAP.refresh();}
 
 /* ---- günün bölümü ve turnuva ---- */
 function showDaily(){rollDays();const i=dailyIdx(),t=dayKey();
-  const rows=direct.filter(d=>d.day===t&&d.ds>0).sort((a,b)=>b.ds-a.ds||a.dat-b.dat).slice(0,8);
+  const rows=direct.filter(d=>d.day===t&&d.ds>0&&!d.gm).sort((a,b)=>b.ds-a.ds||a.dat-b.dat).slice(0,8);
   openPop(`<p class="k">Günün bölümü · ${new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'long'})}</p><h2>${esc(LEVELS[i].name)}</h2><p>Bugün herkes aynı bölümü oynuyor. En çok yıldızı en önce alan zirvede!</p>
    <p style="font-weight:800">Bugünkü en iyin: ${save.daily.st?'★'.repeat(save.daily.st):'henüz yok'}</p>
    <div class="prow"><button class="wb red" id="dGo" type="button">${save.daily.st?'Tekrar dene':'Oyna'}</button></div>
    <ul class="plist">${rows.length?rows.map((r,k)=>`<li class="${r.id===myId?'me':''}"><span class="av" style="background:${avColor(r.name)}">${k+1}</span><span class="nm">${nmH(r.name,r.gm)}</span><span class="v">${'★'.repeat(r.ds)}</span></li>`).join(''):'<li><span class="nm" style="font-weight:600">Bugün henüz kimse bitirmedi. İlk sen ol!</span></li>'}</ul>`);
   $('dGo').addEventListener('click',()=>playMode({type:'daily'},i));}
-function weekRows(k){return direct.map(d=>{let s=0;if(d.wk===k)s=[...(d.ws||'')].reduce((a,b)=>a+(+b||0),0);else if(d.lw&&d.lw.startsWith(k+':'))s=+d.lw.split(':')[1]||0;return{...d,ws2:s};}).filter(d=>d.ws2>0).sort((a,b)=>b.ws2-a.ws2||a.at-b.at);}
+function weekRows(k){return direct.filter(d=>!d.gm).map(d=>{let s=0;if(d.wk===k)s=[...(d.ws||'')].reduce((a,b)=>a+(+b||0),0);else if(d.lw&&d.lw.startsWith(k+':'))s=+d.lw.split(':')[1]||0;return{...d,ws2:s};}).filter(d=>d.ws2>0).sort((a,b)=>b.ws2-a.ws2||a.at-b.at);}
 function champion(){const r=weekRows(prevWeekKey());return r.length?r[0]:null;}
 function showTour(){rollDays();const ids=weekIdx(),wk=weekKey(),sum=save.week.s.reduce((a,b)=>a+b,0),rows=weekRows(wk).slice(0,8),cp=champion();
   openPop(`<p class="k">Haftalık turnuva · bitişe ${dur(weekEnds())}</p><h2>Bu haftanın 5 bölümü</h2><p>Herkese açık, her biri en fazla 3 yıldız. Toplamda en çok yıldızı alan haftanın şampiyonu olur.</p>
@@ -2908,7 +2962,7 @@ const FARM=(()=>{const el=$('farm'),cv=$('farmCv'),c=cv.getContext('2d');let ope
     document.querySelectorAll('.ftabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===tab));
     if(tab==='civ'){const m=chickCounts(),own=CHICKS.filter(k=>m[k.id]>0).length;
       L.innerHTML=`<p class="fsum">${chickTotal()} civciv · ${own} / ${CHICKS.length} tür. Her 3 yıldızlı bölüm bir civciv getirir; nadirleri günlük yumurtadan çıkar.</p><div class="fgrid">${CHICKS.map(k=>`<div class="fitem ${m[k.id]?'':'lock'}">${m[k.id]?`<span class="cnt">${m[k.id]}</span>`:''}${chickSVG(k.id,!m[k.id])}<b>${m[k.id]?k.n:'???'}</b>${k.rare?(k.rare>1?'Çok nadir':'Nadir'):'&nbsp;'}</div>`).join('')}</div>`;}
-    else if(tab==='egg'){L.innerHTML=`<p class="fsum">Sapandan fırlayan yumurtanın görünüşü. Yıldız topladıkça yenileri açılır.</p><div class="fgrid">${SKINS.map(s=>{const op=skinOpen(s);return`<button type="button" class="fitem ${op?'':'lock'} ${curSkin.id===s.id?'sel':''}" data-s="${s.id}" ${op?'':'aria-disabled="true"'}>${eggSVG(s,!op)}<b>${s.n}</b>${op?(curSkin.id===s.id?'Seçili':'Seç'):s.ev?'Kış etkinliği':s.wel?'6 bölüm bitir':s.streak?`${s.streak} gün seri`:`${s.need} ★`}</button>`;}).join('')}</div>`;
+    else if(tab==='egg'){L.innerHTML=`<p class="fsum">Sapandan fırlayan yumurtanın görünüşü. Yıldız topladıkça yenileri açılır.</p><div class="fgrid">${SKINS.map(s=>{const op=skinOpen(s);return`<button type="button" class="fitem ${op?'':'lock'} ${curSkin.id===s.id?'sel':''}" data-s="${s.id}" ${op?'':'aria-disabled="true"'}>${eggSVG(s,!op)}<b>${s.n}</b>${op?(curSkin.id===s.id?'Seçili':'Seç'):s.fin?'200 bölümü bitir':s.ev?'Kış etkinliği':s.wel?'6 bölüm bitir':s.streak?`${s.streak} gün seri`:`${s.need} ★`}</button>`;}).join('')}</div>`;
       L.querySelectorAll('button.fitem').forEach(b=>b.addEventListener('click',()=>{const s=SKINS.find(q=>q.id===b.dataset.s);if(!skinOpen(s))return;curSkin=s;save.skin=s.id;persist();pushScore();list();}));}
     else{const st=total();L.innerHTML=`<p class="fsum">Yıldız topladıkça çiftliğin büyür.</p><ul class="bars">${BUILD.map(([n,name])=>`<li class="${st>=n?'':'lock'}"><span>${st>=n?'✅':'🔒'} ${name}</span><em>${n?n+' ★':'Başlangıç'}</em></li>`).join('')}</ul>`;}}
   function show(){const m=chickCounts(),ids=[];CHICKS.forEach(k=>{for(let q=0;q<Math.min(m[k.id],8);q++)ids.push(k.id);});
@@ -2921,6 +2975,7 @@ const FARM=(()=>{const el=$('farm'),cv=$('farmCv'),c=cv.getContext('2d');let ope
 
 /* ---- harita düğmeleri ---- */
 $('mapDaily').addEventListener('click',showDaily);
+$('fnMore').addEventListener('click',()=>{finaleClose();MAP.open();});$('fnEnd').addEventListener('click',()=>{finaleClose();endlessStart();});
 $('mapMod').addEventListener('click',()=>{const a=(save.ev||{})[EVT.id]||[];openPop(`<p class="k">Modlar</p><h2>Başka ne oynasak?</h2><div class="modes">${evtOn()?`<button type="button" id="moEv" class="hot"><i>❄️</i><span><b>${EVT.name}</b>${a.filter(Boolean).length} / ${EVT.ids.length} bölüm · Kardan yumurta kostümü</span></button>`:''}<button type="button" id="moEn"><i>♾️</i><span><b>Sonsuz mod</b>Art arda gelen bölümler. En iyi serin: ${save.en||0}</span></button><button type="button" id="moCl"><i>🛡️</i><span><b>Kulüp</b>${save.club?'Kulübün: '+esc((CLUBS[save.club]||{}).name||save.club):'Arkadaşlarınla takım kur, haftalık yarış'}</span></button><button type="button" id="moEd"><i>🛠️</i><span><b>Bölüm editörü</b>Kendi bölümünü kur, arkadaşına gönder</span></button></div>`);
   const ev=$('moEv');if(ev)ev.addEventListener('click',showEvent);$('moEn').addEventListener('click',showEndless);$('moCl').addEventListener('click',showClub);$('moEd').addEventListener('click',editOpen);});
 document.querySelectorAll('#editBar [data-tool]').forEach(b=>b.addEventListener('click',()=>{editor.tool=b.dataset.tool;editBar();}));
