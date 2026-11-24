@@ -427,7 +427,7 @@ html,body{background:#2f1f12}
   <div class="mapSide"><button type="button" id="mapDaily" aria-label="Günün bölümü">📅<span>Günlük</span></button><button type="button" id="mapTour" aria-label="Haftalık turnuva">🏆<span>Turnuva</span></button><button type="button" id="mapFarm" aria-label="Çiftliğim">🐣<span>Çiftliğim</span></button><button type="button" id="mapFr" aria-label="Arkadaşlar">👥<span>Arkadaş</span></button><button type="button" id="mapMod" aria-label="Diğer modlar">🎮<span>Modlar</span></button></div>
   <div class="mapZoom"><button type="button" id="mapZi" aria-label="Yakınlaştır">+</button><button type="button" id="mapZo" aria-label="Uzaklaştır">−</button></div>
   <button class="mapGo" id="mapGo" type="button">Oyna</button>
-  <span class="mapVer">Sürüm 2026.11.24-29</span>
+  <span class="mapVer">Sürüm 2026.11.24-30</span>
 </div>
 <div class="tutor" id="tutor" hidden role="dialog" aria-live="polite" aria-labelledby="tuH">
   <svg class="hen" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="30" cy="42" rx="20" ry="16" fill="#b5612f"/><path d="M12 40q-8-10 2-16 2 8 8 10z" fill="#7a3a18"/><circle cx="42" cy="24" r="11" fill="#c46d38"/><path d="M36 13q2-6 5-1 2-6 5 0 3-5 5 2-8 3-15-1z" fill="#d42a1e"/><path d="M52 24l8 3-8 3z" fill="#f0a020"/><path d="M46 31q3 6-1 8-3-3 1-8z" fill="#d42a1e"/><circle cx="45" cy="22" r="2.2" fill="#1b1b1b"/><circle cx="45.7" cy="21.3" r=".7" fill="#fff"/><path d="M24 57v5M34 57v5" stroke="#e0a020" stroke-width="2.4" stroke-linecap="round"/></svg>
@@ -499,7 +499,7 @@ html,body{background:#2f1f12}
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-29</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-30</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -516,7 +516,7 @@ html,body{background:#2f1f12}
       <div class="card wide" role="dialog" aria-modal="true" aria-labelledby="bTitle">
         <p class="k">Kim kaç yıldız topladı?</p>
         <h2 id="bTitle">Skor tablosu</h2>
-        <div class="tabs2" id="bTabs"><button type="button" data-t="all" aria-pressed="true">Genel</button><button type="button" data-t="unvan" aria-pressed="false">Ünvan</button><button type="button" data-t="day" aria-pressed="false">Bugün</button><button type="button" data-t="week" aria-pressed="false">Bu hafta</button><button type="button" data-t="fr" aria-pressed="false">Arkadaşlar</button></div>
+        <div class="tabs2" id="bTabs"><button type="button" data-t="all" aria-pressed="true">Genel</button><button type="button" data-t="day" aria-pressed="false">Bugün</button><button type="button" data-t="week" aria-pressed="false">Bu hafta</button><button type="button" data-t="fr" aria-pressed="false">Arkadaşlar</button></div>
         <p class="note" id="bStatus">Yükleniyor…</p>
         <table class="board" id="board" hidden><thead><tr id="bHead"><th>#</th><th>Ad</th><th>Yıldız</th><th>Bölüm</th><th></th></tr></thead><tbody id="bRows"></tbody></table>
         <div class="mine"><span>Sen: <b id="myName">—</b> · <span id="myStars">0</span> / 1000 yıldız</span><span class="sp"></span><button class="btn" id="bCopy">Skor kodumu kopyala</button></div>
@@ -825,7 +825,7 @@ const TITLES=[['🥇','Altın Yumurta'],['🥈','Gümüş Gaga'],['🥉','Bronz 
 function titleKey(ms){const d=new Date((ms||Date.now())+3*36e5);const back=(d.getUTCDay()-3+7)%7;d.setUTCDate(d.getUTCDate()-back);return d.toISOString().slice(0,10);}
 const prevTitleKey=()=>titleKey(Date.now()-7*864e5);
 function titleEnds(){const k=titleKey(),d=new Date(k+'T00:00:00Z');return d.getTime()+7*864e5-3*36e5-Date.now();}
-let TT={};function titleCalc(){const ck=titleKey(),cand=[];(typeof direct!=='undefined'?direct:[]).forEach(d=>{if(d.gm)return;const g=d.tw===ck?d.stars-(d.tb||0):0;if(g>0)cand.push({d,g});});
+let TT={};function titleCalc(){const cand=[];(typeof direct!=='undefined'?direct:[]).forEach(d=>{if(d.gm||!(d.stars>0))return;cand.push({d,g:d.stars});});
   cand.sort((a,b)=>b.g-a.g||a.d.at-b.d.at);TT={};cand.slice(0,3).forEach((c,k)=>{TT[String(c.d.name).toLowerCase()]={r:k,g:c.g,id:c.d.id,name:c.d.name};});return cand.slice(0,3);}
 const titleOf=n=>TT[String(n||'').toLowerCase()];
 const tH=n=>{const t=titleOf(n);return t?` <span class="ttl t${t.r}" title="Haftanın ünvanı">${TITLES[t.r][0]} ${TITLES[t.r][1]}</span>`:'';};
@@ -2642,7 +2642,7 @@ function showIncomingB(){const x=incomingB;if(!x)return;incomingB=null;openPop(`
 const TUT={
  harita:['Bölüm haritası','Yolda ilerledikçe yeni bölümler açılır; istediğin açık bölüme dokunup oynayabilirsin. Soldaki düğmeler: 📅 her gün yeni bölüm, 🏆 haftalık turnuva, 🐣 çiftliğin ve civcivlerin, 👥 #numarayla arkadaş ekleme. Parmaklarınla sıkıştırarak haritayı uzaklaştırabilirsin.'],
  modlar:['🎮 Yeni modlar','Haritadaki 🎮 Modlar düğmesinde: ❄️ Kış etkinliği (10 karlı bölüm, Kardan yumurta kostümü), ♾️ Sonsuz mod (art arda bölüm serisi), 🛡️ Kulüp (arkadaşlarınla takım, haftalık yarış) ve 🛠️ Bölüm editörü (kendi bölümünü kur, arkadaşına gönder).'],
- unvan:['🏅 Haftalık ünvan yarışı','Bu hafta en çok yıldız kazanan ilk 3 oyuncu anında ünvan alır: 🥇 Altın Yumurta, 🥈 Gümüş Gaga, 🥉 Bronz Tüy. Ünvan adının yanında herkese görünür; biri seni geçerse ünvan ona geçer. Her çarşamba 00:00 itibarıyla sayaç sıfırlanır. Sıralama: Skor → Ünvan.'],
+ unvan2:['🏅 Ünvan yarışı','Skor tablosunda ilk 3\'e giren anında ünvan alır: 🥇 Altın Yumurta, 🥈 Gümüş Gaga, 🥉 Bronz Tüy. Ünvan adının yanında herkese görünür; biri seni geçerse ünvan ona geçer.'],
  goals:['Bonus yıldızlar','Her bölümde 5 yıldız var. ★★★ yumurtayı kaçıncı denemede yuvaya soktuğuna göre gelir. Sol üstteki 🏅 Görev ve ✨ Ustalık ise isteğe bağlı ekstra şartlar: yapmasan da bölümü geçersin, yaparsan her biri +1 ★. İkisi aynı atışta da yapılabilir.'],
  alcak:['Kesikli çizgi: altında kal','Çizginin üstünden atmak serbest, bölümü yine geçersin. Ama ekstra yıldız için yumurta uçuş boyunca çizgiyi hiç geçmemeli.'],
  yuksek:['Kesikli çizgi: üstüne çık','Alçaktan atmak da serbest, bölümü yine geçersin. Ama ekstra yıldız için yumurta en az bir kez çizginin üstüne çıkmalı.'],
@@ -2690,7 +2690,7 @@ document.addEventListener('keydown',e=>{if(tutOpen&&(e.key==='Escape'||e.key==='
 let tutPend=null;
 function tutLevel(){if(mapOpen||!S||li>=LEVELS.length)return;if(portraitMQ.matches){tutPend=true;return;}tutPend=null;const keys=levelTuts(S.def,li);if(keys.length)setTimeout(()=>{if(!mapOpen&&!portraitMQ.matches&&!tutOpen)tutStart(keys);},650);}
 try{portraitMQ.addEventListener('change',()=>{if(!portraitMQ.matches&&tutPend)tutLevel();});}catch(e){}
-function tutMap(){const k=['harita','modlar','unvan'].filter(x=>!save.seen[x]);if(k.length&&mapOpen&&!tutOpen&&$('pop').hidden)setTimeout(()=>{if(mapOpen&&$('pop').hidden&&!tutOpen)tutStart(k.filter(x=>!save.seen[x]));},500);}
+function tutMap(){const k=['harita','modlar','unvan2'].filter(x=>!save.seen[x]);if(k.length&&mapOpen&&!tutOpen&&$('pop').hidden)setTimeout(()=>{if(mapOpen&&$('pop').hidden&&!tutOpen)tutStart(k.filter(x=>!save.seen[x]));},500);}
 
 /* ---------- sosyal: #numara, arkadaşlar, günlük yumurta, günün bölümü, turnuva, meydan okuma, çiftliğim ---------- */
 const pad2=n=>String(n).padStart(2,'0');
@@ -2842,7 +2842,7 @@ function showFriends(){
     save.friends.push(c);persist();pushScore();$('frIn').value='';N.textContent=d?`${d.name} eklendi! Haritanda görünecek.`:'Eklendi; bağlantı gelince görünecek.';render();MAP.refresh();});
 }
 function friendMarks(){return save.friends.map(c=>docByCode(c)).filter(Boolean).map(d=>({name:d.name,gm:d.gm,lv:curLevelOf(d)}));}
-function socialSync(){try{titleCalc();const me=player&&titleOf(player);if(me&&!save.gm){const k=titleKey()+':'+me.r;save.ttlSeen=save.ttlSeen||'';if(!save.ttlSeen.startsWith(titleKey())||+save.ttlSeen.split(':')[1]>me.r){save.ttlSeen=k;persist();setTimeout(()=>toast(`${TITLES[me.r][0]} Bu haftanın ${me.r+1}.'sisin: "${TITLES[me.r][1]}" ünvanı artık adının yanında!`,false,4200),600);}}}catch(e){}if(!socialSync.cl){socialSync.cl=1;clubsLoad();}if(!player&&myId){const me=direct.find(d=>d.id===myId);if(me&&me.name&&me.src!=='kod'){player=me.name;if(me.gm){save.gm=1;persist();}try{localStorage.setItem(KEY+'.name',player);}catch(e){}$('bWho').textContent=player;$('ovName').hidden=true;if(typeof afterIntro==='function')setTimeout(afterIntro,200);}}const me=myId&&direct.find(d=>d.id===myId);if(me&&me.fr&&!save.friends.length){save.friends=me.fr.split(',').map(Number).filter(n=>n>=10000&&n<=99999);persist();}MAP.refresh();}
+function socialSync(){try{titleCalc();const me=player&&titleOf(player);if(me&&!save.gm){const best=save.ttlBest==null?9:save.ttlBest;if(me.r<best){save.ttlBest=me.r;persist();setTimeout(()=>toast(`${TITLES[me.r][0]} Sıralamada ${me.r+1}. oldun: "${TITLES[me.r][1]}" ünvanı artık adının yanında!`,false,4200),600);}}else if(!me&&save.ttlBest!=null){save.ttlBest=null;persist();}}catch(e){}if(!socialSync.cl){socialSync.cl=1;clubsLoad();}if(!player&&myId){const me=direct.find(d=>d.id===myId);if(me&&me.name&&me.src!=='kod'){player=me.name;if(me.gm){save.gm=1;persist();}try{localStorage.setItem(KEY+'.name',player);}catch(e){}$('bWho').textContent=player;$('ovName').hidden=true;if(typeof afterIntro==='function')setTimeout(afterIntro,200);}}const me=myId&&direct.find(d=>d.id===myId);if(me&&me.fr&&!save.friends.length){save.friends=me.fr.split(',').map(Number).filter(n=>n>=10000&&n<=99999);persist();}MAP.refresh();}
 
 /* ---- günün bölümü ve turnuva ---- */
 function showDaily(){rollDays();const i=dailyIdx(),t=dayKey();
