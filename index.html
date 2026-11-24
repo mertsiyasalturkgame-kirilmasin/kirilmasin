@@ -313,6 +313,7 @@ button.fitem{cursor:pointer}
 .modes button b{display:block;font:800 1.02rem/1.2 var(--display);color:#4a2c0e}
 .modes button i{font-style:normal;font-size:1.8rem}
 .modes button.hot{border-color:#7ac0ff;background:#eef7ff}
+#bRetry{display:none!important}
 .rpbtn{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:7;font:800 .95rem/1 var(--body);color:#fff8ea;background:linear-gradient(#a8743f,#7d4f22);border:2px solid #4f2e0f;border-radius:999px;padding:10px 18px;box-shadow:0 3px 0 #3d230a,0 8px 18px rgba(0,0,0,.35);cursor:pointer}
 .pcard.wide{width:min(920px,100%)}
 .sttab{max-height:58vh;overflow:auto;border-radius:12px;background:#2a1a0c}
@@ -423,7 +424,7 @@ html,body{background:#2f1f12}
   <div class="mapSide"><button type="button" id="mapDaily" aria-label="Günün bölümü">📅<span>Günlük</span></button><button type="button" id="mapTour" aria-label="Haftalık turnuva">🏆<span>Turnuva</span></button><button type="button" id="mapFarm" aria-label="Çiftliğim">🐣<span>Çiftliğim</span></button><button type="button" id="mapFr" aria-label="Arkadaşlar">👥<span>Arkadaş</span></button><button type="button" id="mapMod" aria-label="Diğer modlar">🎮<span>Modlar</span></button></div>
   <div class="mapZoom"><button type="button" id="mapZi" aria-label="Yakınlaştır">+</button><button type="button" id="mapZo" aria-label="Uzaklaştır">−</button></div>
   <button class="mapGo" id="mapGo" type="button">Oyna</button>
-  <span class="mapVer">Sürüm 2026.11.24-26</span>
+  <span class="mapVer">Sürüm 2026.11.24-27</span>
 </div>
 <div class="tutor" id="tutor" hidden role="dialog" aria-live="polite" aria-labelledby="tuH">
   <svg class="hen" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="30" cy="42" rx="20" ry="16" fill="#b5612f"/><path d="M12 40q-8-10 2-16 2 8 8 10z" fill="#7a3a18"/><circle cx="42" cy="24" r="11" fill="#c46d38"/><path d="M36 13q2-6 5-1 2-6 5 0 3-5 5 2-8 3-15-1z" fill="#d42a1e"/><path d="M52 24l8 3-8 3z" fill="#f0a020"/><path d="M46 31q3 6-1 8-3-3 1-8z" fill="#d42a1e"/><circle cx="45" cy="22" r="2.2" fill="#1b1b1b"/><circle cx="45.7" cy="21.3" r=".7" fill="#fff"/><path d="M24 57v5M34 57v5" stroke="#e0a020" stroke-width="2.4" stroke-linecap="round"/></svg>
@@ -495,7 +496,7 @@ html,body{background:#2f1f12}
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-26</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-27</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -870,6 +871,9 @@ updSnd();
 
 /* ---------- durum ---------- */
 let W=0,H=0,dpr=1,sc=1;
+let resumeMsg='';const attKey=i=>(typeof mode!=='undefined'&&mode?mode.type:'n')+':'+i;
+function attSet(){if(typeof mode!=='undefined'&&mode&&['endless','edit','shared'].includes(mode.type))return;save.att=save.att||{};save.att[attKey(li)]=eggsMax-eggsLeft;persist();}
+function attClear(){if(save.att&&save.att[attKey(li)]!=null){delete save.att[attKey(li)];persist();}}
 let replay=null,rec=[],slowUsed=0,timeScale=1,lastBonus=null,lastWinSt=0,lastUsed=0,li=0,S=null,eggsLeft=EGGS,eggsMax=EGGS,phase='aim',aim=null,from=-1,caughtOnce=false,parts=[],splats=[],toastT=null,endT=null,flash=0,lastTramp=false;
 function resize(){const r=stage.getBoundingClientRect();dpr=Math.min(window.devicePixelRatio||1,2);W=r.width;H=r.height;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);applyZoom();}
 let bsc=1,offY=0,gsc=1;
@@ -907,13 +911,13 @@ function renderTot(){$('tot').innerHTML=`★ <b>${total()}</b> / ${MAXST()}`;}
 
 function startLevel(i,keepToast){
   li=i;const def=LV(i);if(typeof autoJob!=='undefined'&&autoJob){save.inv.auto++;}if(typeof armed!=='undefined'){if(armed.aim)save.inv.aim++;if(armed.wing)save.inv.wing++;armed={aim:false,wing:false};autoJob=null;persist();}
-  if(i<LEVELS.length){if(typeof statBegin==='function')statBegin(i);}else if(typeof statFlush==='function')statFlush();ghost=null;if(i<LEVELS.length&&typeof ghostLoad==='function')setTimeout(()=>ghostLoad(i),0);armedEgg='normal';replay=null;rec=[];lastRec=null;cam.z=1;timeScale=1;try{$('rpBtn').hidden=true;}catch(e){}S=buildLevel(def);eggsLeft=EGGS;if(typeof tutLevel==='function')setTimeout(tutLevel,0);eggsMax=EGGS;phase='intro';introT=0;inBasket=0;lay=0;henMood=null;hatch=null;aim=null;parts=[];splats=[];clearTimeout(endT);
+  if(i<LEVELS.length){if(typeof statBegin==='function')statBegin(i);}else if(typeof statFlush==='function')statFlush();ghost=null;if(i<LEVELS.length&&typeof ghostLoad==='function')setTimeout(()=>ghostLoad(i),0);armedEgg='normal';replay=null;rec=[];lastRec=null;cam.z=1;timeScale=1;try{$('rpBtn').hidden=true;}catch(e){}S=buildLevel(def);eggsLeft=EGGS;{const k=attKey(i),u=(save.att||{})[k]||0;if(u>0&&u<EGGS){eggsLeft=EGGS-u;resumeMsg=`Önceki denemen sürüyor: ${eggsLeft} yumurtan kaldı. 3 yıldız için bölümü baştan bitirip tekrar oyna.`;}else resumeMsg='';}if(typeof tutLevel==='function')setTimeout(tutLevel,0);eggsMax=EGGS;phase='intro';introT=0;inBasket=0;lay=0;henMood=null;hatch=null;aim=null;parts=[];splats=[];clearTimeout(endT);
   applyZoom();bgKey='';
   from=-1;$('lvK').textContent=i<LEVELS.length?`${CHAPTERS[def.chapter].name} · Bölüm ${i+1} / ${LEVELS.length}`:'Özel bölüm';$('lvName').textContent=def.name;
   if(typeof mode!=='undefined'&&mode)$('lvK').textContent=modeLabel()+(i<LEVELS.length?` · Bölüm ${i+1}`:'');gotChick=null;
   $('ovRes').hidden=true;$('ovMenu').hidden=true;renderEggs();renderTot();
   {const t=i===LEVELS.length-1?'Son soru: Bu oyunda Mert’i yenebilir misin?':SAYINGS[i%SAYINGS.length],d=$('dare');d.textContent='';const m=t.indexOf('Mert');if(m<0)d.textContent=t;else{d.append(t.slice(0,m));const b=document.createElement('b');b.textContent='Mert';d.append(b,t.slice(m+4));}fitStage();}
-  if(!keepToast)toast(def.tip,false,4800);
+  if(resumeMsg)toast(resumeMsg,false,5200);else if(!keepToast)toast(def.tip,false,4800);
   renderFx();renderInv();windParts=null;
 }
 function nextEgg(){S.egg=null;aim=null;from=-1;startFetch();}
@@ -935,7 +939,7 @@ function finishEgg(){
     return;
   }
   if(e.state==='won'){
-    phase='done';const used=eggsMax-eggsLeft,st=Math.max(1,3-used);lastUsed=used;lastWinSt=st;fanfare();vib([20,40,20,40,90]);henMood={type:'win',t:0};setTimeout(cackle,200);setTimeout(cackle,1300);
+    attClear();phase='done';const used=eggsMax-eggsLeft,st=Math.max(1,3-used);lastUsed=used;lastWinSt=st;fanfare();vib([20,40,20,40,90]);henMood={type:'win',t:0};setTimeout(cackle,200);setTimeout(cackle,1300);
     {const[nx0,ny0]=nestPos(S);hatch={dx:e.x-nx0,dy:e.y-ny0,ang:e.ang,t:0,chirps:0};}
     {const c=coop();for(let k=0;k<14;k++)parts.push({x:c.bx+(Math.random()-.5)*60,y:c.ny-45,vx:(Math.random()-.5)*160,vy:-120-Math.random()*160,life:2.2+Math.random(),age:0,col:Math.random()<.5?'#b7562b':'#d4913f',sz:6+Math.random()*5,kind:'feather',rot:Math.random()*TAU,vr:(Math.random()-.5)*4,ph:Math.random()*TAU});}
     for(let k=0;k<40;k++){const a=Math.random()*TAU,v=150+Math.random()*450;parts.push({x:e.x,y:e.y-20,vx:Math.cos(a)*v,vy:Math.sin(a)*v-300,life:1.2+Math.random()*.6,age:0,col:pickC(),sz:5+Math.random()*6,kind:'conf'});}
@@ -954,7 +958,7 @@ function finishEgg(){
     endT=setTimeout(()=>showResult(true,st,prev),3000);
     return;
   }
-  eggsLeft--;renderEggs();
+  eggsLeft--;renderEggs();if(eggsLeft>0)attSet();else attClear();
   {const[nx,ny]=nestPos(S);if(e.hitMat!=='sack'&&Math.hypot(e.x-nx,e.y-ny)<200)setTimeout(()=>{if(phase==='aim'||phase==='lay'||phase==='wait')toast('Az kaldı! Yuva burnunun dibindeydi.',false,2000);},1500);}
   if(e.state==='broken'){
     LS.b++;crack();flash=1;vib([25,40,70]);if(rec.length>8&&eggsLeft>0){lastRec=rec.slice();clearTimeout(rpTimer);let tries=0;const poll=()=>{if(phase==='aim'&&!replay){$('rpBtn').hidden=false;rpTimer=setTimeout(()=>$('rpBtn').hidden=true,6000);}else if(tries++<40&&lastRec)rpTimer=setTimeout(poll,150);};rpTimer=setTimeout(poll,900);}
@@ -2215,7 +2219,7 @@ function frameInner(now){
     if(phase==='fly'&&e&&e.state!=='fly'){finishEgg();}
   }
   baseMode();
-  if(phase==='intro'){const before=introT;introT+=dt;for(let n=0;n<EGGS;n++){const tl=n*INTRO_STEP+.2,td=(n+1)*INTRO_STEP;if(before<tl&&introT>=tl)cluck();if(before<td&&introT>=td)inBasket=n+1;}if(introT>=EGGS*INTRO_STEP+.15)startFetch();}
+  if(phase==='intro'){const before=introT,NE=Math.max(1,eggsLeft);introT+=dt;for(let n=0;n<NE;n++){const tl=n*INTRO_STEP+.2,td=(n+1)*INTRO_STEP;if(before<tl&&introT>=tl)cluck();if(before<td&&introT>=td)inBasket=n+1;}if(introT>=NE*INTRO_STEP+.15)startFetch();}
   else if(phase==='lay'){lay+=dt/LAY_T;if(lay>=1){lay=1;phase='aim';}}
   if(snap){snap.t+=dt;if(snap.t>.8)snap=null;}
   if(hatch){const b=hatch.t;hatch.t+=dt;if(b<.75&&hatch.t>=.75){tone(1800,900,.05,'triangle',.05);}[1.05,1.55,2.3].forEach(c=>{if(b<c&&hatch.t>=c)chirp();});}
