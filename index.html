@@ -301,6 +301,21 @@ button.fitem{cursor:pointer}
 .gmn{color:#ffd23f!important;font-weight:800;text-shadow:0 1px 0 rgba(0,0,0,.5),0 0 6px rgba(255,190,40,.45)}
 .pin b.gmn{background:#3a2208!important}
 .hud .who.gm,.mapTop #mapWho.gm{color:#ffd23f!important}
+.tutor{position:fixed;left:50%;bottom:calc(var(--vb,0px) + max(18px,env(safe-area-inset-bottom)) + 74px);transform:translateX(-50%);z-index:96;width:min(560px,calc(100% - 24px));display:flex;gap:10px;align-items:flex-end;pointer-events:none}
+.tutor[hidden]{display:none}
+.tutor .hen{flex:none;width:64px;height:64px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35));animation:tbob 1.6s ease-in-out infinite}
+@keyframes tbob{50%{transform:translateY(-4px)}}
+.tutor .bub{position:relative;flex:1;pointer-events:auto;background:#fff8ea;color:#4a2c0e;border:3px solid #7d4f22;border-radius:18px;padding:12px 14px 10px;box-shadow:0 5px 0 #4f2e0f,0 14px 30px rgba(0,0,0,.4);font-family:var(--body);animation:tin .28s ease-out}
+.tutor .bub::before{content:"";position:absolute;left:-13px;bottom:16px;border:10px solid transparent;border-right:12px solid #7d4f22}
+.tutor .bub::after{content:"";position:absolute;left:-8px;bottom:18px;border:8px solid transparent;border-right:9px solid #fff8ea}
+@keyframes tin{from{opacity:0;transform:translateY(10px) scale(.96)}}
+.tutor h3{margin:0 0 4px;font:800 1.05rem/1.15 var(--display);color:#b3381a}
+.tutor p{margin:0;font-size:.92rem;line-height:1.38}
+.tutor .tr{display:flex;align-items:center;gap:8px;margin-top:9px}
+.tutor .tr small{color:#8a6a4a;font-weight:700;margin-right:auto}
+.tutor .tr button{font:800 .9rem/1 var(--body);border-radius:999px;padding:8px 16px;cursor:pointer;border:2px solid #4f2e0f;color:#fff8ea;background:linear-gradient(#a8743f,#7d4f22);box-shadow:0 3px 0 #3d230a}
+.tutor .tr button.all{background:none;color:#7d4f22;border-color:transparent;box-shadow:none;padding:8px 6px}
+@media (max-height:430px){.tutor{bottom:calc(var(--vb,0px) + 10px)}.tutor .hen{width:48px;height:48px}.tutor p{font-size:.85rem}}
 .rgoals{list-style:none;margin:4px 0 12px;padding:0;display:grid;gap:6px}
 .rgoals li{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.06);font-size:.88rem;color:var(--muted)}
 .rgoals li span{flex:1}
@@ -388,7 +403,11 @@ html,body{background:#2f1f12}
   <div class="mapSide"><button type="button" id="mapDaily" aria-label="Günün bölümü">📅<span>Günlük</span></button><button type="button" id="mapTour" aria-label="Haftalık turnuva">🏆<span>Turnuva</span></button><button type="button" id="mapFarm" aria-label="Çiftliğim">🐣<span>Çiftliğim</span></button><button type="button" id="mapFr" aria-label="Arkadaşlar">👥<span>Arkadaş</span></button></div>
   <div class="mapZoom"><button type="button" id="mapZi" aria-label="Yakınlaştır">+</button><button type="button" id="mapZo" aria-label="Uzaklaştır">−</button></div>
   <button class="mapGo" id="mapGo" type="button">Oyna</button>
-  <span class="mapVer">Sürüm 2026.11.24-22</span>
+  <span class="mapVer">Sürüm 2026.11.24-23</span>
+</div>
+<div class="tutor" id="tutor" hidden role="dialog" aria-live="polite" aria-labelledby="tuH">
+  <svg class="hen" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="30" cy="42" rx="20" ry="16" fill="#b5612f"/><path d="M12 40q-8-10 2-16 2 8 8 10z" fill="#7a3a18"/><circle cx="42" cy="24" r="11" fill="#c46d38"/><path d="M36 13q2-6 5-1 2-6 5 0 3-5 5 2-8 3-15-1z" fill="#d42a1e"/><path d="M52 24l8 3-8 3z" fill="#f0a020"/><path d="M46 31q3 6-1 8-3-3 1-8z" fill="#d42a1e"/><circle cx="45" cy="22" r="2.2" fill="#1b1b1b"/><circle cx="45.7" cy="21.3" r=".7" fill="#fff"/><path d="M24 57v5M34 57v5" stroke="#e0a020" stroke-width="2.4" stroke-linecap="round"/></svg>
+  <div class="bub"><h3 id="tuH"></h3><p id="tuP"></p><div class="tr"><small id="tuN"></small><button class="all" type="button" id="tuAll">Hepsini geç</button><button type="button" id="tuNext">Geç</button></div></div>
 </div>
 <div class="pop" id="pop" hidden><div class="pcard" id="pcard" role="dialog" aria-modal="true" aria-label="Pencere"></div></div>
 <div class="farm" id="farm" hidden>
@@ -454,7 +473,7 @@ html,body{background:#2f1f12}
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-22</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-23</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -840,7 +859,7 @@ function renderTot(){$('tot').innerHTML=`★ <b>${total()}</b> / ${MAXST()}`;}
 
 function startLevel(i,keepToast){
   li=i;const def=LEVELS[i];if(typeof autoJob!=='undefined'&&autoJob){save.inv.auto++;}if(typeof armed!=='undefined'){if(armed.aim)save.inv.aim++;if(armed.wing)save.inv.wing++;armed={aim:false,wing:false};autoJob=null;persist();}
-  armedEgg='normal';S=buildLevel(def);eggsLeft=EGGS;eggsMax=EGGS;phase='intro';introT=0;inBasket=0;lay=0;henMood=null;hatch=null;aim=null;parts=[];splats=[];clearTimeout(endT);
+  armedEgg='normal';S=buildLevel(def);eggsLeft=EGGS;if(typeof tutLevel==='function')setTimeout(tutLevel,0);eggsMax=EGGS;phase='intro';introT=0;inBasket=0;lay=0;henMood=null;hatch=null;aim=null;parts=[];splats=[];clearTimeout(endT);
   applyZoom();bgKey='';
   from=-1;$('lvK').textContent=`${CHAPTERS[def.chapter].name} · Bölüm ${i+1} / ${LEVELS.length}`;$('lvName').textContent=def.name;
   if(typeof mode!=='undefined'&&mode)$('lvK').textContent=modeLabel()+` · Bölüm ${i+1}`;gotChick=null;
@@ -1066,7 +1085,7 @@ const MAP=(()=>{
     el.hidden=false;mapOpen=true;document.body.classList.add('map-on');vbUpdate();build();
     sc.scrollTop=Math.max(0,yr2y(raw[cur])*Z-Hv*.58);draw();$('mapZo').disabled=Z<=ZMIN+.001;$('mapZi').disabled=Z>=ZMAX-.001;
   }
-  function close(){el.hidden=true;mapOpen=false;document.body.classList.remove('map-on');vbUpdate();}
+  function close(){if(typeof tutOpen!=='undefined'&&tutOpen){tutQ=[];tutShow();}el.hidden=true;mapOpen=false;document.body.classList.remove('map-on');vbUpdate();}
   addEventListener('resize',()=>{if(!mapOpen)return;const f=sc.scrollTop/Math.max(1,Hc*Z);build();sc.scrollTop=f*Hc*Z;draw();});
   // yakınlaştır / uzaklaştır
   function setZ(nz,ay){nz=Math.max(ZMIN,Math.min(ZMAX,nz));if(Math.abs(nz-Z)<.001)return;if(ay==null)ay=el.clientHeight/2;const ly=(sc.scrollTop+ay)/Z;Z=nz;applyZ();sc.scrollTop=ly*Z-ay;draw();try{localStorage.setItem(KEY+'.mapz',Z.toFixed(3));}catch(e){}
@@ -2108,7 +2127,7 @@ let last=performance.now(),acc=0;
 const portraitMQ=matchMedia('(orientation:portrait) and (max-width:700px)');
 try{portraitMQ.addEventListener('change',()=>{if(!portraitMQ.matches&&!mapOpen&&S&&phase==='intro')toast(LEVELS[li].tip,false,4800);});}catch(e){}
 function frame(now){
-  if(mapOpen||portraitMQ.matches){last=now;requestAnimationFrame(frame);return;}
+  if(mapOpen||portraitMQ.matches||(typeof tutOpen!=='undefined'&&tutOpen)){last=now;requestAnimationFrame(frame);return;}
   let dt=Math.min(.05,(now-last)/1000);last=now;acc+=dt;
   while(acc>=SUB){sub(S,SUB);acc-=SUB;
     if(autoJob&&--autoJob.stepsLeft<=0)fireAuto();
@@ -2406,6 +2425,57 @@ const clean=d=>{const x=d.data()||{};return{id:d.id,name:String(x.name||'').slic
 })();
 
 document.body.appendChild($('ovBoard'));document.body.appendChild($('ovName'));
+
+/* ---------- bir kereye mahsus anlatıcı ---------- */
+const TUT={
+ harita:['Bölüm haritası','Yolda ilerledikçe yeni bölümler açılır; istediğin açık bölüme dokunup oynayabilirsin. Soldaki düğmeler: 📅 her gün yeni bölüm, 🏆 haftalık turnuva, 🐣 çiftliğin ve civcivlerin, 👥 #numarayla arkadaş ekleme. Parmaklarınla sıkıştırarak haritayı uzaklaştırabilirsin.'],
+ goals:['Bonus yıldızlar','Her bölümde 5 yıldız var. ★★★ yumurtayı kaçıncı denemede yuvaya soktuğuna göre gelir. Sol üstteki 🏅 Görev ve ✨ Ustalık ise isteğe bağlı ekstra şartlar: yapmasan da bölümü geçersin, yaparsan her biri +1 ★. İkisi aynı atışta da yapılabilir.'],
+ alcak:['Kesikli çizgi: altında kal','Çizginin üstünden atmak serbest, bölümü yine geçersin. Ama ekstra yıldız için yumurta uçuş boyunca çizgiyi hiç geçmemeli.'],
+ yuksek:['Kesikli çizgi: üstüne çık','Alçaktan atmak da serbest, bölümü yine geçersin. Ama ekstra yıldız için yumurta en az bir kez çizginin üstüne çıkmalı.'],
+ guc:['Sapan gücü şartı','Nişan alırken sapanın yanında çekme gücü % olarak yazar. Şartı tutuyorsa yeşil, tutmuyorsa kırmızı olur. Kırmızıyken de atabilirsin; sadece o ekstra yıldız gelmez.'],
+ sure:['Süre şartı','Süre, yumurta sapandan çıktığı an başlar, yuvaya oturduğu an biter. "x saniyeden kısa" hızlı ve dümdüz bir atış, "en az x saniye havada" ise yüksek ve uzun bir kavis ister.'],
+ sekme:['Sekme şartı','Yumurtanın bir yere çarpıp sekmesi sayılır; yuvanın kendisi ve çok hafif sürtünmeler sayılmaz. "Bant atışı" önce duvarlardan sekip sonra yuvaya girmek demek.'],
+ eggs:['Yumurta türleri','Sağ üstteki düğmelerle sıradaki atışın yumurtasını seçebilirsin. Kaz: iri ve ağır, rüzgâr işlemez ama kolay çatlar. Bıldırcın: küçük ve hafif, dar yerlerden geçer ama rüzgârda savrulur. Lastik: ilk sert çarpmada kırılmaz, seker. Her biri tek atışlık; günlük yumurtadan ve tilkilerden yenileri çıkar.'],
+ balon:['Soru işaretli balonlar','Balonun içinde hediye (fazladan yumurta, nişan yardımı) ya da ceza (sert rüzgâr, sis, ağır yumurta) olabilir. Balonlar yuvaya giden yolların dışında durur; hediyeyi almak için genelde bir yumurtadan vazgeçmen gerekir.'],
+ cuval:['Çuval yığınları','Un, arpa ve saman çuvalları yolu kapatabilir. Onlara yumurta atarak yıkabilirsin ama o yumurta kırılır. Bazı yığınlar 2 ya da 3 vuruşta yıkılır.'],
+ kus:['Kuşlar','Gökyüzünde uçan kuşlar (gece yarasalar) yumurtaya çarparsa yumurta kırılır. Aralarından geçecek anı kolla.'],
+ yagmur:['Yağmur','Yağmurda yumurta ağırlaşır ve daha çabuk düşer; biraz daha güçlü ya da yüksek at.'],
+ sis:['Sis','Siste nişan çizgisi görünmez; atışı tahmin ederek yapman gerekir.'],
+ gece:['Gece','Gece ortalık karanlık; yuvayı ve engelleri dikkatli seç.'],
+ ruzgar:['Rüzgâr','Sol üstteki ok rüzgârın yönünü ve gücünü gösterir. Rüzgâr yumurtayı uçarken o yöne iter; nişanını buna göre kaydır.'],
+ akim:['Rüzgâr akımı','Kıvrımlı çizgilerle gösterilen bölgeler içinden geçen yumurtayı yukarı ya da yana savurur. Doğru kullanırsan yumurtayı yuvaya taşır.'],
+ tramp:['Traktör lastiği','Lastiğe çarpan yumurta kırılmaz, güçlü bir şekilde geri seker.'],
+ buz:['Buzlu tahta','Buzda sürtünme yok, yumurta kayar. Tahtaya teğet inersen yuvaya kadar kayabilir.'],
+ bant:['Taşıma bandı','Bandın üstüne düşen yumurta, okların gösterdiği yöne taşınır.'],
+ diken:['Dikenler','Dikenlere değen yumurta anında kırılır; uzak dur.'],
+ portal:['Fıçılar','Bir fıçıya giren yumurta, diğer fıçıdan aynı hızla çıkar.'],
+ kement:['Kementli sapan','Bu sapan havadaki yumurtayı yakalar. Yakalayınca oradan yeniden nişan alıp atarsın.'],
+ yuva:['Hareketli yuva','Yuva yerinde durmuyor; yumurtanın varacağı anı hesapla.'],
+ tilki:['🦊 Patron: Tilki','Tilki yuvanın önünde gidip geliyor ve ona değen yumurtayı yer. Tilki uzaklaştığı anı kolla; zamanlama her şey. Yenersen her yumurta türünden +1 kazanırsın.'],
+ kedi:['🐱 Kedi','Direğin tepesindeki kedi arada bir pati atar. Pati anında yanından geçen yumurtayı savurur; kırmaz ama yönünü değiştirir. Patinin arasından geç ya da patiyi kullan!'],
+ kuzu:['🐑 Kuzu','Kuzu yerde dolaşır ve yerde yuvarlanan yumurtayı iter. Çok sert çarpan yumurta kırılabilir.']};
+const GOALTUT={alcak:'alcak',yuksek:'yuksek',zayif:'guc',guclu:'guc',hizli:'sure',uzun:'sure',sekmesiz:'sekme',sekmeli:'sekme',sekme1:'sekme',bank:'sekme',bank3:'sekme',tramplen:'tramp',portal:'portal',buz:'buz',yakala:'kement',ruzgar:'akim'};
+save.seen=save.seen||{};let tutOpen=false,tutQ=[];
+function levelTuts(d,i){const k=[];const add=x=>{if(x&&TUT[x]&&!save.seen[x]&&!k.includes(x))k.push(x);};
+  if(d.boss)add('tilki');(d.mobs||[]).forEach(m=>add(m.type==='cat'?'kedi':m.type==='lamb'?'kuzu':null));
+  if(d.gv||d.us)add('goals');[d.gv,d.us].forEach(g=>g&&add(GOALTUT[g.k]));
+  const fx=d.fx||{};if(fx.wind)add('ruzgar');if(fx.birds&&fx.birds.length)add('kus');if(fx.rain)add('yagmur');if(fx.fog)add('sis');if(fx.night)add('gece');
+  const mats=new Set((d.solids||[]).map(x=>x.mat));if(mats.has('tramp'))add('tramp');if(mats.has('ice'))add('buz');if(mats.has('belt'))add('bant');if(mats.has('spike'))add('diken');
+  if((d.solids||[]).some(x=>x.brk))add('cuval');if(d.wind&&d.wind.length)add('akim');if(d.portals&&d.portals.length)add('portal');if(d.catchers&&d.catchers.length)add('kement');
+  if(d.nest&&d.nest.move)add('yuva');if(d.bonus&&d.bonus.length)add('balon');if(i>=10)add('eggs');
+  return k.slice(0,3);}
+function tutShow(){if(!tutQ.length){$('tutor').hidden=true;tutOpen=false;return;}
+  const [key,n,t]=tutQ[0];$('tuH').textContent=TUT[key][0];$('tuP').textContent=TUT[key][1];$('tuN').textContent=t>1?`${n} / ${t}`:'';$('tuAll').hidden=tutQ.length<2;
+  const b=$('tutor').querySelector('.bub');b.style.animation='none';void b.offsetWidth;b.style.animation='';$('tutor').hidden=false;tutOpen=true;save.seen[key]=1;persist();}
+function tutStart(keys){if(!keys.length)return;const t=keys.length;tutQ=keys.map((k,i)=>[k,i+1,t]);tutShow();setTimeout(()=>{try{$('tuNext').focus();}catch(e){}},50);}
+$('tuNext').addEventListener('click',()=>{tutQ.shift();tutShow();});
+$('tuAll').addEventListener('click',()=>{tutQ.forEach(q=>save.seen[q[0]]=1);persist();tutQ=[];tutShow();});
+document.addEventListener('keydown',e=>{if(tutOpen&&(e.key==='Escape'||e.key==='Enter')){e.preventDefault();tutQ.shift();tutShow();}});
+let tutPend=null;
+function tutLevel(){if(mapOpen||!S)return;if(portraitMQ.matches){tutPend=true;return;}tutPend=null;const keys=levelTuts(S.def,li);if(keys.length)setTimeout(()=>{if(!mapOpen&&!portraitMQ.matches&&!tutOpen)tutStart(keys);},650);}
+try{portraitMQ.addEventListener('change',()=>{if(!portraitMQ.matches&&tutPend)tutLevel();});}catch(e){}
+function tutMap(){if(!save.seen.harita&&mapOpen&&!tutOpen&&$('pop').hidden)setTimeout(()=>{if(mapOpen&&$('pop').hidden&&!tutOpen&&!save.seen.harita)tutStart(['harita']);},500);}
+
 /* ---------- sosyal: #numara, arkadaşlar, günlük yumurta, günün bölümü, turnuva, meydan okuma, çiftliğim ---------- */
 const pad2=n=>String(n).padStart(2,'0');
 const dayKey=(d=new Date())=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
@@ -2526,7 +2596,7 @@ function showGift(after){
 }
 let introDone=false;
 function afterIntro(){if(introDone)return;introDone=true;streakTouch();pushScore();MAP.refresh();
-  const next=()=>{if(incoming)setTimeout(showIncoming,250);};
+  const next=()=>{if(incoming)setTimeout(showIncoming,250);else setTimeout(tutMap,300);};
   if(save.gift!==dayKey())setTimeout(()=>showGift(next),350);else next();}
 
 /* ---- arkadaşlar ---- */
