@@ -7,7 +7,7 @@
 <title>Kırılmasın!</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;600;800&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   /* Düzen: üstte ince bir bilgi şeridi, altında 16:9 oyun sahnesi; bölüm seçimi ve sonuçlar sahnenin üstünde kart olarak açılır */
@@ -249,7 +249,7 @@ body.fs .stage{border-radius:6px;width:100%!important;min-width:0;aspect-ratio:a
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-4</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-5</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -1680,6 +1680,7 @@ function frame(now){
 }
 
 /* ---------- açılış animasyonu: MRT GAMES → Kırılmasın! ---------- */
+let splashFace=null,splashL=null;
 const splashDone=(()=>{
   const el=$('splash'),sc2=$('splashCv'),c=sc2.getContext('2d');let done=false,resolve,start=performance.now(),parts2=[],ended=false;
   const P=new Promise(r=>resolve=r);
@@ -1706,26 +1707,42 @@ const splashDone=(()=>{
     const t=(now-start)/1000,W=innerWidth,H=innerHeight,m=Math.min(W,H),cx0=W/2,cy0=H/2;
     // zemin
     const g=c.createRadialGradient(cx0,cy0,0,cx0,cy0,Math.max(W,H)*.75);g.addColorStop(0,'#1c3340');g.addColorStop(1,'#081014');c.fillStyle=g;c.fillRect(0,0,W,H);
-    // ---- MRT GAMES (0–2.8 sn) ----
+    // ---- MRT GAMES (0–2.8 sn): harf harf giriş, ışık, yumuşak dağılma ----
     if(t<2.9){
-      const a=ease(t/.7),fs=Math.min(W*.13,m*.24),y=cy0+fs*.12;
-      c.save();c.globalAlpha=a;c.textAlign='center';c.textBaseline='middle';
-      c.font=`800 ${fs}px "Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif`;
-      const tw=c.measureText('MRT GAMES').width,x0=cx0-tw/2;
-      // silme: 2.0–2.8 sn arası soldan sağa
-      const wipe=clamp((t-2.0)/.8),wx=x0-fs*.3+(tw+fs*.6)*wipe;
-      c.beginPath();c.rect(wx,0,W,H);c.clip();
-      const sc=1+.06*(1-ease(t/.9));c.translate(cx0,y);c.scale(sc,sc);c.translate(-cx0,-y);
-      const gg=c.createLinearGradient(0,y-fs*.5,0,y+fs*.5);gg.addColorStop(0,'#fff1c2');gg.addColorStop(.5,'#ffc04d');gg.addColorStop(1,'#d07a1e');
-      c.shadowColor='rgba(255,170,60,.55)';c.shadowBlur=fs*.35*a;c.fillStyle=gg;c.fillText('MRT GAMES',cx0,y);c.shadowBlur=0;
-      // parıltı geçişi
-      if(t>.6&&t<1.7){const sx=x0+(tw)*((t-.6)/1.1);const sg=c.createLinearGradient(sx-fs*.4,0,sx+fs*.4,0);sg.addColorStop(0,'rgba(255,255,255,0)');sg.addColorStop(.5,'rgba(255,255,255,.65)');sg.addColorStop(1,'rgba(255,255,255,0)');c.globalCompositeOperation='source-atop';c.fillStyle=sg;c.fillRect(sx-fs*.4,y-fs*.6,fs*.8,fs*1.2);c.globalCompositeOperation='source-over';}
+      const fs=Math.min(W*.14,m*.26),y=cy0+fs*.08,txt='MRT GAMES',FONT=`700 ${fs}px Fredoka,"Baloo 2",Nunito,"Arial Rounded MT Bold",system-ui,sans-serif`;
+      const d=Math.min(window.devicePixelRatio||1,2);
+      if(!splashFace||splashFace.width!==sc2.width||splashFace.height!==sc2.height){splashFace=document.createElement('canvas');splashFace.width=sc2.width;splashFace.height=sc2.height;}
+      const f=splashFace.getContext('2d');f.setTransform(1,0,0,1,0,0);f.clearRect(0,0,splashFace.width,splashFace.height);f.setTransform(d,0,0,d,0,0);
+      c.save();c.font=FONT;f.font=FONT;c.textBaseline=f.textBaseline='middle';
+      const ws=[...txt].map(ch=>c.measureText(ch).width),track=fs*.035,tw=ws.reduce((a,b)=>a+b,0)+track*(txt.length-1);let x=cx0-tw/2;
+      const halo=clamp(t/.9)*(1-clamp((t-2.1)/.6));
+      if(halo>0){const hg=c.createRadialGradient(cx0,y,0,cx0,y,tw*.75);hg.addColorStop(0,`rgba(140,20,40,${.26*halo})`);hg.addColorStop(1,'rgba(140,20,40,0)');c.fillStyle=hg;c.fillRect(cx0-tw,y-tw*.75,tw*2,tw*1.5);}
+      const R=fs*.055; // yuvarlatma kalınlığı
+      const sw=(t-1.15)/.8,gxW=(cx0-tw/2-fs*.6)+(tw+fs*1.2)*sw;
+      if(!splashL)splashL=document.createElement('canvas');
+      [...txt].forEach((ch,i)=>{
+        const w=ws[i],lx=x;x+=w+track;if(ch===' ')return;
+        const pin=t-.15-i*.075,p=pin<=0?0:pin>=.6?1:(()=>{const u=pin/.6,s1=1.70158;return 1+(s1+1)*Math.pow(u-1,3)+s1*Math.pow(u-1,2);})();
+        const q=ease((t-2.0-i*.05)/.42),a=clamp(pin/.35)*(1-q);if(a<=0)return;
+        const dy=(1-p)*fs*.32-q*fs*.28,sc=(.82+.18*p)*(1+q*.08),ccx=lx+w/2;
+        // harfi ayrı tuvalde tam opak çiz
+        const LW=Math.ceil((w+fs*1.4)*d),LH=Math.ceil(fs*2.4*d);if(splashL.width<LW||splashL.height<LH){splashL.width=LW;splashL.height=LH;}
+        const L=splashL.getContext('2d');L.setTransform(1,0,0,1,0,0);L.clearRect(0,0,splashL.width,splashL.height);L.setTransform(d,0,0,d,(w/2+fs*.7)*d,fs*1.05*d);
+        L.font=FONT;L.textBaseline='middle';L.lineJoin='round';L.lineWidth=R;
+        const glyph=(col,oy)=>{L.fillStyle=col;L.strokeStyle=col;L.strokeText(ch,-w/2,oy);L.fillText(ch,-w/2,oy);};
+        const g=L.createLinearGradient(0,-fs*.45,0,fs*.45);g.addColorStop(0,'#c0384a');g.addColorStop(.5,'#951a2d');g.addColorStop(1,'#5a0e1b');glyph(g,0);
+        L.save();L.beginPath();L.rect(-w,-fs*.62,w*2,fs*.44);L.clip();L.globalCompositeOperation='source-atop';L.fillStyle='rgba(255,215,220,.14)';L.fillRect(-w,-fs*.62,w*2,fs*.44);L.restore();
+        if(sw>0&&sw<1){const gx=gxW-ccx;const lg=L.createLinearGradient(gx-fs*.4,0,gx+fs*.4,0);lg.addColorStop(0,'rgba(255,235,235,0)');lg.addColorStop(.5,'rgba(255,235,235,.42)');lg.addColorStop(1,'rgba(255,235,235,0)');L.globalCompositeOperation='source-atop';L.fillStyle=lg;L.fillRect(-w-fs,-fs,w*2+fs*2,fs*2);}
+        L.globalCompositeOperation='destination-over';
+        for(let k=1;k<=7;k++)glyph(k>4?'#14020a':'#2a050c',k*fs*.011);
+        L.shadowColor='rgba(0,0,0,.9)';L.shadowBlur=fs*.3*d;L.shadowOffsetY=fs*.1*d;glyph('rgba(0,0,0,.6)',0);L.shadowBlur=0;L.shadowOffsetY=0;
+        L.globalCompositeOperation='source-over';
+        c.save();c.translate(ccx,y+dy);c.scale(sc,sc);c.globalAlpha=a;c.drawImage(splashL,0,0,LW,LH,-(w/2+fs*.7),-fs*1.05,LW/d,LH/d);c.restore();
+      });
+      const ul=ease((t-.75)/.6)*(1-ease((t-1.95)/.4));
+      if(ul>0){c.globalAlpha=ul;const lw=tw*.42*ul;const lg2=c.createLinearGradient(cx0-lw/2,0,cx0+lw/2,0);lg2.addColorStop(0,'rgba(154,28,47,0)');lg2.addColorStop(.5,'rgba(194,52,71,.95)');lg2.addColorStop(1,'rgba(154,28,47,0)');c.fillStyle=lg2;c.fillRect(cx0-lw/2,y+fs*.64,lw,Math.max(1.5,fs*.025));
+        c.fillStyle='rgba(225,205,205,.75)';c.textAlign='center';c.font=`600 ${Math.max(10,fs*.13)}px Fredoka,Figtree,system-ui,sans-serif`;c.fillText('S U N A R',cx0,y+fs*.88);c.globalAlpha=1;}
       c.restore();
-      // alt çizgi
-      if(t<2.0){c.save();c.globalAlpha=a*.8;c.strokeStyle='#ffc04d';c.lineWidth=Math.max(1.5,fs*.03);const lw=tw*.6*ease((t-.3)/.8);c.beginPath();c.moveTo(cx0-lw/2,y+fs*.62);c.lineTo(cx0+lw/2,y+fs*.62);c.stroke();c.restore();}
-      // silen ışık ve kıvılcımlar
-      if(wipe>0&&wipe<1){c.save();const lg=c.createLinearGradient(wx-fs*.15,0,wx+fs*.15,0);lg.addColorStop(0,'rgba(255,220,150,0)');lg.addColorStop(.5,'rgba(255,240,200,.95)');lg.addColorStop(1,'rgba(255,220,150,0)');c.fillStyle=lg;c.fillRect(wx-fs*.15,y-fs*.7,fs*.3,fs*1.4);c.restore();
-        for(let k=0;k<4;k++)parts2.push({x:wx,y:y+(Math.random()-.5)*fs*.9,vx:(Math.random()*.6+.2)*fs*2,vy:(Math.random()-.5)*fs*2,life:.6+Math.random()*.4,age:0,r:Math.random()*fs*.035+1});}
     }
     // kıvılcımlar
     const dt=1/60;parts2=parts2.filter(p=>{p.age+=dt;if(p.age>p.life)return false;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=m*.6*dt;c.globalAlpha=1-p.age/p.life;c.fillStyle='#ffd27a';c.beginPath();c.arc(p.x,p.y,p.r,0,TAU);c.fill();c.globalAlpha=1;return true;});
@@ -1747,8 +1764,9 @@ const splashDone=(()=>{
     }
     requestAnimationFrame(frame);
   }
-  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)start-=6000;
-  requestAnimationFrame(frame);
+  const go=()=>{start=performance.now();if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)start-=6000;requestAnimationFrame(frame);};
+  let went=false;const go1=()=>{if(!went){went=true;go();}};
+  try{document.fonts.load('700 60px Fredoka').then(go1,go1);}catch(e){go1();}setTimeout(go1,900);
   return P;
 })();
 /* ---------- oyuncu ve skor tablosu ---------- */
