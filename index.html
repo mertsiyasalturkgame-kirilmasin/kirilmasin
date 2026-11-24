@@ -188,7 +188,7 @@ body{padding:0!important}
 .stage{flex:1 1 auto!important;width:100%!important;min-width:0!important;height:auto!important;min-height:0;aspect-ratio:auto!important;margin:0!important;border-radius:0!important;box-shadow:none!important}
 .dare{flex:none!important;width:100%!important;min-width:0!important;margin:0!important;border-radius:0!important;box-shadow:none!important;min-height:0!important;padding:16px max(16px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))!important}
 .stage .overlay{z-index:20}
-.hud{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;flex-wrap:nowrap!important;align-items:center;gap:8px!important;min-height:0!important;padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 18px max(10px,env(safe-area-inset-left));background:linear-gradient(rgba(28,16,4,.62),rgba(28,16,4,0));pointer-events:none}
+.hud{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;flex-wrap:nowrap!important;align-items:center;gap:8px!important;min-height:0!important;padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 18px max(10px,env(safe-area-inset-left));background:none;pointer-events:none}
 .hud>*{pointer-events:auto}
 .hud .brand{display:none!important}
 .hud .lv{display:grid!important;flex:0 1 auto;min-width:0;max-width:34vw;margin-right:auto;background:linear-gradient(#a8743f,#7d4f22);border:2px solid #4f2e0f;border-radius:12px;padding:4px 12px 5px;box-shadow:0 3px 0 #3d230a;line-height:1.1}
@@ -307,6 +307,8 @@ button.fitem{cursor:pointer}
 .chip.goal.done{border-color:rgba(255,200,80,.7);color:#ffd88a}
 .chick-new{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 10px;font-weight:800;color:var(--accent)}
 .chick-new svg{width:40px;height:40px}
+/* ana ekrana eklenmiş uygulamada (iOS) tam ekran yüksekliği */
+html.pwa .map,html.pwa .wrap,html.pwa .farm,html.pwa .pop,html.pwa .splash{bottom:auto!important;height:100vh!important;height:100lvh!important}
 /* ---------- çiftlik yolu bölüm haritası ---------- */
 .map{position:fixed;top:0;left:0;right:0;bottom:0;z-index:60;background:#79b544;overflow:hidden;font-family:var(--body);color:#fff}
 .map[hidden]{display:none}
@@ -337,9 +339,9 @@ button.fitem{cursor:pointer}
 .csign .pl small{display:block;font:700 .72rem/1.2 var(--body);color:#ffe3a6;margin-top:2px}
 .csign::before,.csign::after{content:"";position:absolute;top:100%;width:7px;height:22px;background:#6b4420;border:1px solid #4a2a0c;border-top:0;z-index:-1}
 .csign::before{left:22%}.csign::after{right:22%}
-.mapTop{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:8px;padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 18px max(10px,env(safe-area-inset-left));background:linear-gradient(rgba(28,16,4,.72),rgba(28,16,4,0));pointer-events:none;z-index:2}
+.mapTop{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:8px;padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 18px max(10px,env(safe-area-inset-left));background:none;pointer-events:none;z-index:2}
 .mapTop>*{pointer-events:auto}
-.mapTop .mb{font:800 1.35rem/1 var(--display);margin:0 auto 0 0;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 2px 0 rgba(0,0,0,.4);pointer-events:none;color:#fff7e6}
+.mapTop .mb{text-shadow:0 2px 0 #5d3815,0 0 8px rgba(60,30,5,.6)!important;font:800 1.35rem/1 var(--display);margin:0 auto 0 0;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 2px 0 rgba(0,0,0,.4);pointer-events:none;color:#fff7e6}
 .mapTop .pill,.mapTop button{font:800 .85rem/1 var(--body);color:#fff8ea;background:linear-gradient(#a8743f,#7d4f22);border:2px solid #4f2e0f;border-radius:999px;padding:7px 12px;box-shadow:0 3px 0 #3d230a;cursor:pointer;white-space:nowrap;flex:none;overflow:hidden;text-overflow:ellipsis}
 .mapTop #mapWho{max-width:28vw}
 @media (max-width:480px){.mapTop .mb{font-size:1rem}.mapTop .pill,.mapTop button{padding:6px 9px;font-size:.78rem}}
@@ -378,7 +380,7 @@ button.fitem{cursor:pointer}
   <div class="mapSide"><button type="button" id="mapDaily" aria-label="Günün bölümü">📅<span>Günlük</span></button><button type="button" id="mapTour" aria-label="Haftalık turnuva">🏆<span>Turnuva</span></button><button type="button" id="mapFarm" aria-label="Çiftliğim">🐣<span>Çiftliğim</span></button><button type="button" id="mapFr" aria-label="Arkadaşlar">👥<span>Arkadaş</span></button></div>
   <div class="mapZoom"><button type="button" id="mapZi" aria-label="Yakınlaştır">+</button><button type="button" id="mapZo" aria-label="Uzaklaştır">−</button></div>
   <button class="mapGo" id="mapGo" type="button">Oyna</button>
-  <span class="mapVer">Sürüm 2026.11.24-15</span>
+  <span class="mapVer">Sürüm 2026.11.24-16</span>
 </div>
 <div class="pop" id="pop" hidden><div class="pcard" id="pcard" role="dialog" aria-modal="true" aria-label="Pencere"></div></div>
 <div class="farm" id="farm" hidden>
@@ -444,7 +446,7 @@ button.fitem{cursor:pointer}
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-15</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-16</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -750,6 +752,7 @@ const cv=$('cv'),cx=cv.getContext('2d'),stage=$('stage');
 const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- kayıt ---------- */
+try{if(navigator.standalone||matchMedia('(display-mode: standalone),(display-mode: fullscreen)').matches)document.documentElement.classList.add('pwa');}catch(e){}
 const KEY='kirilmasin.v4'; // v4: 24 Kasım sıfırlaması, kayıtlı kullanıcı adları
 const SCOL=window.FIREBASE_CONFIG?'players':'scores';
 let save={stars:{}};
@@ -918,7 +921,7 @@ const MAP=(()=>{
   function layout(){
     Wv=sc.clientWidth||innerWidth;Hv=sc.clientHeight||innerHeight;cx=Wv/2;A=Math.min(Wv-120,600)/2;
     raw=[];signs=[];zones=[];let r=0,prev=-1;
-    for(let i=0;i<N;i++){const ch=LEVELS[i].chapter;if(ch!==prev){if(i>0){r+=CH_GAP;signs.push({ch,r:r-GAP*.5-CH_GAP*.5});}else signs.push({ch,r:GAP*1.5});zones.push({ch,r0:i?r-GAP*.5-CH_GAP*.5:-1e5});prev=ch;}raw.push(r);r+=GAP;}
+    for(let i=0;i<N;i++){const ch=LEVELS[i].chapter;if(ch!==prev){if(i>0){r+=CH_GAP;signs.push({ch,r:r-GAP*.5-CH_GAP*.5});}else signs.push({ch,r:GAP*2.5});zones.push({ch,r0:i?r-GAP*.5-CH_GAP*.5:-1e5});prev=ch;}raw.push(r);r+=GAP;}
     Hc=TOP+raw[N-1]+BOT;applyZ();
   }
   // bölge rengi (yumuşak geçişli)
