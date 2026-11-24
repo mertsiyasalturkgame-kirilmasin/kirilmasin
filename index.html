@@ -388,7 +388,7 @@ html,body{background:#2f1f12}
   <div class="mapSide"><button type="button" id="mapDaily" aria-label="Günün bölümü">📅<span>Günlük</span></button><button type="button" id="mapTour" aria-label="Haftalık turnuva">🏆<span>Turnuva</span></button><button type="button" id="mapFarm" aria-label="Çiftliğim">🐣<span>Çiftliğim</span></button><button type="button" id="mapFr" aria-label="Arkadaşlar">👥<span>Arkadaş</span></button></div>
   <div class="mapZoom"><button type="button" id="mapZi" aria-label="Yakınlaştır">+</button><button type="button" id="mapZo" aria-label="Uzaklaştır">−</button></div>
   <button class="mapGo" id="mapGo" type="button">Oyna</button>
-  <span class="mapVer">Sürüm 2026.11.24-21</span>
+  <span class="mapVer">Sürüm 2026.11.24-22</span>
 </div>
 <div class="pop" id="pop" hidden><div class="pcard" id="pcard" role="dialog" aria-modal="true" aria-label="Pencere"></div></div>
 <div class="farm" id="farm" hidden>
@@ -454,7 +454,7 @@ html,body{background:#2f1f12}
           <li><i style="background:#9b6bd6;border-radius:50%"></i>Soru balonu: içinden hediye de ceza da çıkabilir. Yolun dışındadır, almak için bir yumurta gözden çıkar.</li><li><i style="background:#5e3a1c"></i>Yel değirmeni kanadı: döner, çarparsan kırılır</li>
         </ul>
         <div class="grid" id="grid"></div>
-        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-21</span><button class="btn" id="mClose">Kapat</button></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:var(--muted)">Sürüm 2026.11.24-22</span><button class="btn" id="mClose">Kapat</button></div>
       </div>
     </div>
     <div class="overlay" id="ovName" hidden>
@@ -2282,12 +2282,14 @@ async function gmActivate(code){
   for(let k=0;k<40&&!(DB&&myId&&(dbState==='ok'||dbState==='slow'));k++){if(dbState==='off'&&k>4)break;await sleep(250);}
   if(!DB||!myId||!window.FIREBASE_CONFIG)throw new Error('Bağlanılamadı. Tekrar dene.');
   try{await DB.collection('gm').doc(myId).set({k:code,at:Date.now()});}catch(e){throw new Error('Bu kod geçersiz.');}
-  const ref=DB.collection(NCOL).doc('mert');const snap=await ref.get();
-  if(snap.exists){if(snap.data().uid!==myId)throw new Error('MERT adı başka bir cihazda kayıtlı.');}else await ref.set({uid:myId,name:'MERT',at:Date.now()});
-  save.gm=1;persist();return 'MERT';}
+  let busy=false;
+  for(const [k,n] of [['mert','MERT'],['geliştirici','GELİŞTİRİCİ']]){const ref=DB.collection(NCOL).doc(k);const snap=await ref.get();
+    if(snap.exists){if(snap.data().uid===myId){save.gm=1;persist();return n;}busy=true;continue;}
+    try{await ref.set({uid:myId,name:n,at:Date.now()});save.gm=1;persist();return n;}catch(e){}}
+  throw new Error(busy?'Bu kodun adı başka bir cihazda kayıtlı.':'Bu kod geçersiz.');}
 $('nameForm').addEventListener('submit',async e=>{e.preventDefault();const v=$('nameIn').value.trim().replace(/\s+/g,' '),er=$('nameErr'),b=$('nameGo');
   if(v.startsWith('#')){b.disabled=true;er.textContent='Kontrol ediliyor…';try{const n=await gmActivate(v.slice(1).trim());setPlayer(n);$('ovName').hidden=true;er.textContent='';if(typeof afterIntro==='function')setTimeout(afterIntro,200);}catch(x){er.textContent=x.message;}b.disabled=false;return;}
-  if(nameKey(v)==='mert'){er.textContent='Bu ad alınmış, başka bir ad seç.';return;}
+  if(['mert','geliştirici','gelistirici'].includes(nameKey(v))){er.textContent='Bu ad alınmış, başka bir ad seç.';return;}
   if(!nameOk(v)){er.textContent='2–20 karakter; harf, rakam, boşluk, nokta, tire ya da alt çizgi kullan.';$('nameIn').focus();return;}
   b.disabled=true;er.textContent='Kaydediliyor…';
   try{const n=await register(v);setPlayer(n);$('ovName').hidden=true;er.textContent='';if(typeof afterIntro==='function')setTimeout(afterIntro,200);}
@@ -2304,7 +2306,7 @@ async function pushScore(){
   if(!DB||!myId||canWrite===false||!player)return;
   if(writing){again=true;return;}
   writing=true;
-  const base={name:player,nk:save.gm?'mert':nameKey(player),...(save.gm?{gm:true}:{}),stars:total(),done:doneN(),levels:lvStr(),at:Date.now()};
+  const base={name:player,nk:nameKey(player),...(save.gm?{gm:true}:{}),stars:total(),done:doneN(),levels:lvStr(),at:Date.now()};
   try{rollDays();}catch(e){}
   let full=base;try{full={...base,code:myCode(),streak:(save.streak&&save.streak.n)|0,day:save.daily.k||'',ds:save.daily.st|0,dat:save.daily.at|0,wk:save.week.k||'',ws:save.week.s.join(''),lw:save.lw||'',ch:chickTotal()|0,fr:save.friends.join(','),skin:save.skin||'klasik'};}catch(e){}
   try{
